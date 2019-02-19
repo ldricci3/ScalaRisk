@@ -1,17 +1,17 @@
 package models
 
-class Game(val names:  Set[String]) {
+class Game(val names:  List[String]) {
   require(names.size >= 3 && names.size <= 6, "Must have from 3 to 6 players")
   val gameMap: GameMap = new GameMap
 
-  val numArmies = 50 - 5*names.size
-  var baseArmy: Set[Army] = Set()
-  for (i <- 1 to numArmies) {
+  private var baseArmy: Set[Army] = Set()
+  for (i <- 1 to (50 - 5*names.size)) {
     baseArmy += new Infantry;
   }
-  val players = for (i <- names) yield {
+
+  val players = scala.util.Random.shuffle(for (i <- names) yield {
     new Player(i, baseArmy);
-  }
+  })
 
 
 }
