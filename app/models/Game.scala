@@ -10,7 +10,7 @@ class Game(val names:  Set[String]) {
     baseArmy += new Infantry;
   }
   val players = for (i <- names) yield {
-    Player.addPlayer(i, baseArmy);
+    new Player(i, baseArmy);
   }
 
 
