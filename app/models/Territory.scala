@@ -1,5 +1,5 @@
 package models
 
-class Territory {
+class Territory(val continent: String, var player: Player, ) {
 
 }
