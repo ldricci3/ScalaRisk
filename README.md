@@ -1,6 +1,6 @@
 ## How to run
 
-To Start Risk:
+Start Risk:
 
 ```bash
 sbt run
