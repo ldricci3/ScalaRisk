@@ -3,6 +3,7 @@
   @main("Players") {
 
     <h1>Players</h1>
+    <p>Please enter 3 to 6 players.</p>
 
     @* Flash shows updates to a page *@
     @request.flash.data.map{ case (name) =>
@@ -41,5 +42,5 @@
 
     <p></p>
     <button>Start Game</button>
-  
+
   }
