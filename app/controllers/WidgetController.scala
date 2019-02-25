@@ -20,11 +20,9 @@ import play.api.mvc._
 class WidgetController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc) {
   import WidgetForm._
 
-  private val widgets = scala.collection.mutable.ArrayBuffer(
-    Widget("Widget 1", 123),
-    Widget("Widget 2", 456),
-    Widget("Widget 3", 789)
-  )
+  private val widgets = scala.collection.mutable.ArrayBuffer(Widget(null))
+
+  var playerCount = 0
 
   // The URL to the widget.  You can call this directly from the template, but it
   // can be more convenient to leave the template completely stateless i.e. all
@@ -51,9 +49,10 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
 
     val successFunction = { data: Data =>
       // This is the good case, where the form was successfully parsed as a Data object.
-      val widget = Widget(name = data.name, price = data.price)
+      val widget = Widget(name = data.name)
       widgets.append(widget)
-      Redirect(routes.WidgetController.listWidgets()).flashing("info" -> "Widget added!")
+      playerCount += 1
+      Redirect(routes.WidgetController.listWidgets()).flashing("Success" -> " Player added!")
     }
 
     val formValidationResult = form.bindFromRequest

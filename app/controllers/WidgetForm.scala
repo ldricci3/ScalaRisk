@@ -10,7 +10,7 @@ object WidgetForm {
    * Using a class specifically for form binding reduces the chances
    * of a parameter tampering attack and makes code clearer.
    */
-  case class Data(name: String, price: Int)
+  case class Data(name: String)
 
   /**
    * The form definition for the "create a widget" form.
@@ -18,9 +18,7 @@ object WidgetForm {
    * as well as how to convert from a Data to form data and vice versa.
    */
   val form = Form(
-    mapping(
-      "name" -> nonEmptyText,
-      "price" -> number(min = 0)
-    )(Data.apply)(Data.unapply)
+    mapping("name" -> nonEmptyText)
+    (Data.apply)(Data.unapply)
   )
 }
