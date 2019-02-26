@@ -27,6 +27,7 @@ class Game(val names:  List[String], val colors: List[String]) {
     GameMapType.mapType = "basic"
     GameMap.getResources
     GameMap.setupAdjacentTerritories()
+    GameMap.setupContinentsAndTerritories()
   }
 
   val M1only: Boolean = true
