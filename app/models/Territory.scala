@@ -3,7 +3,7 @@ package models
 class Territory(val name: String,
                 val continent: String,
                 var numArmies: Int) {
-  var occupant: Player = new Player(2340, "rainbow", "Scala", Set.empty[Army])
+  var occupant: Player = new Player(2340, "Red", "Scala", Set.empty[Army])
 
   /**
     * Constructor used during GameMap setup
