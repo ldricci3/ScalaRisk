@@ -1,4 +1,5 @@
 package models
+import scala.collection.mutable
 
 class Player(val id: Int,
              val color: String,
@@ -9,13 +10,13 @@ class Player(val id: Int,
     || color == "Yellow"
     || color == "Green"
     || color == "Blue")
-  require(requirements)
+  require(requirements, "Red, Black, Yellow, Green, Blue")
 
   var territoryNames: List[String] = List()
   val colorRBG: (Int, Int, Int) = createRGB
   var armiesOnReserve: Int = armies.size
-  var visited: Map[String, Boolean] = Map.empty[String, Boolean]
-  var connectedTerritories: Set[String] = Set.empty[String]
+  var visited: mutable.Map[String, Boolean] = mutable.Map.empty[String, Boolean]
+  var connectedTerritories: mutable.Set[String] = mutable.Set.empty[String]
 
   /** Assign territories to this player at the start of game. */
   def assignInitialTerritories(initialTerritories: List[String]): Unit = {
@@ -46,6 +47,7 @@ class Player(val id: Int,
   def placeArmies(): Unit = {
     while (armiesOnReserve > 0) {
       //deploy armies
+      armiesOnReserve -= 1
     }
   }
 
@@ -56,7 +58,7 @@ class Player(val id: Int,
 
   /** Fills visited Map values with false */
   def resetVisited(): Unit = {
-    visited = Map[String, Boolean]().withDefaultValue(false)
+    visited = mutable.Map[String, Boolean]().withDefaultValue(false)
   }
 
   /**
@@ -69,7 +71,7 @@ class Player(val id: Int,
     visited(currentTerritory) = true
     connectedTerritories += currentTerritory
     //recursively search neighbors
-    val neighbors: Set[String] = GameMap.getNeighborsByName(currentTerritory)
+    val neighbors: mutable.Set[String] = GameMap.getNeighborsByName(currentTerritory)
     neighbors
       .filter((name: String) => !visited(name)
         && GameMap.getTerritoryByName(name).isOccupiedBy(this))
