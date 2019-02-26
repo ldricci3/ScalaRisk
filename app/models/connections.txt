@@ -1,0 +1,42 @@
+North Africa, Brazil, Western Europe, Southern Europe, Egypt, East Africa, Congo
+Egypt, North Africa, East Africa, Middle East, Southern Europe
+Congo, North Africa, East Africa, South Africa
+East Africa, Egypt, Middle East, North Africa, Congo, South Africa, Madagascar
+South Africa, Congo, East Africa, Madagascar
+Madagascar, East Africa, South Africa
+Yakutsk, Siberia, Irkutsk, Kamchatka
+Kamchatka, Alaska, Yakutsk, Japan, Irkutsk
+Ural, Ukraine, Afghanistan, China, Siberia
+Siberia, Ural, Yakutsk, Irkutsk, Mongolia, China
+Irkutsk, Yakutsk, Kamchatka, Japan, Mongolia, Siberia
+Japan, Kamchatka, Irkutsk, Mongolia
+Afghanistan, Ukraine, Ural, China, India, Middle East
+China, Afghanistan, Ural, Siberia, Mongolia, Siam, India
+Mongolia, China, Siberia, Irkutsk, Japan
+Middle East, East Africa, Egypt, Southern Europe, Ukraine, Afghanistan
+India, Middle East, Afghanistan, China, Siam
+Siam, Indonesia, India, China
+Indonesia, Siam, New Guinea, Western Australia 
+New Guinea, Indonesia, Western Australia, Eastern Australia
+Western Australia, Indonesia, New Guinea, Eastern Australia
+Eastern Australia, New Guinea, Western Australia
+Iceland, Greenland, Scandinavia, Great Britain
+Scandinavia, Iceland, Great Britain, Northern Europe, Ukraine
+Great Britain, Iceland, Scandinavia, Northern Europe, Western Europe
+Northern Europe, Scandinavia, Ukraine, Southern Europe, Great Britain, Western Europe
+Ukraine, Scandinavia, Northern Europe, Southern Europe, Ural, Afghanistan, Middle East
+Western Europe, Great Britain, Southern Europe, North Africa, Northern Europe
+Southern Europe, Western Europe, Northern Europe, Ukraine, Middle East, Egypt, North Africa
+Alaska, Kamchatka, Northwest Territory, Alberta
+Northwest Territory, Alaska, Alberta, Ontario, Greenland
+Greenland, Northwest Territory, Ontario, Quebec, Iceland
+Alberta, Alaska, Northwest Territory, Ontario, Western United States
+Ontario, Northwest Territory, Quebec, Greenland, Eastern United States, Western United States, Alberta
+Quebec, Greenland, Ontario, Eastern United States
+Western United States, Eastern United States, Ontario, Alberta, Central America
+Eastern United States, Western United States, Ontario, Quebec, Central America
+Central America, Western United States, Eastern United States, Venezuela
+Venezuela, Central America, Brazil, Peru
+Brazil, Venezuela, Peru, Argentina, North Africa
+Peru, Venezuela, Argentina
+Argentina, Peru, Brazil
