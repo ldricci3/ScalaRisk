@@ -21,7 +21,7 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
   import WidgetForm._
 
   private val widgets = scala.collection.mutable.ArrayBuffer(Widget(null))
-
+  var playerList = List[String]()
   var playerCount = 0
 
   // The URL to the widget.  You can call this directly from the template, but it
@@ -51,6 +51,7 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
       // This is the good case, where the form was successfully parsed as a Data object.
       val widget = Widget(name = data.name)
       widgets.append(widget)
+      playerList = widget.name::playerList
       playerCount += 1
       Redirect(routes.WidgetController.listWidgets()).flashing("Success" -> " Player added!")
     }

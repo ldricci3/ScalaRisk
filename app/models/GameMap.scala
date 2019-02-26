@@ -1,6 +1,7 @@
 package models
 import scala.io.Source
 import scala.collection.mutable
+
 object GameMap {
   val mapType: String = GameMapType.mapType
   val validMapTypes: Boolean =
