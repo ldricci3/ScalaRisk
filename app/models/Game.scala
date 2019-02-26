@@ -14,9 +14,9 @@ class Game(val names:  List[String], val colors: List[String]) {
     baseArmy += new Infantry
   }
   /** R1: 3-6 uniquely identifiable players */
-  val namesAndColors: List[(String, String)] = names zip colors
-  val players: List[Player] = for (((name, color), id) <- namesAndColors.zipWithIndex) yield {
-    new Player(id, color, name, baseArmy)
+  //val namesAndColors: List[(String, String)] = names zip colors
+  val players: List[Player] = for ((name: String, id: Int) <- names.zipWithIndex) yield {
+    new Player(id, name, baseArmy)
   }
   /** R2: Random turn order */
   val playerOrder: List[Player] = scala.util.Random.shuffle(players)
