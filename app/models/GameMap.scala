@@ -1,6 +1,6 @@
 package models
 import scala.io.Source
-
+import scala.collection.mutable
 object GameMap {
   val mapType: String = GameMapType.mapType
   val validMapTypes: Boolean =
@@ -8,10 +8,10 @@ object GameMap {
   require(validMapTypes, "map type must be either \"basic\" or \"test\"")
 
   val (continentSource, adjacencySource) = getResources
-  var adjacencySet: Map[String, Set[String]] = Map.empty[String, Set[String]]
+  var adjacencySet: mutable.Map[String, mutable.Set[String]] = mutable.Map.empty[String, mutable.Set[String]]
 
-  var territoryMap: Map[String, Territory] = Map.empty[String, Territory]
-  var continentMap: Map[String, Continent] = Map.empty[String, Continent]
+  var territoryMap: mutable.Map[String, Territory] = mutable.Map.empty[String, Territory]
+  var continentMap: mutable.Map[String, Continent] = mutable.Map.empty[String, Continent]
 
   /**
     * Getter for Territory objects
@@ -29,7 +29,7 @@ object GameMap {
     * Get adjacent territories of given territory
     * @return Set of Territory
     */
-  def getAdjacentTerritories(homeTerritory: String): Set[String] = {
+  def getAdjacentTerritories(homeTerritory: String): mutable.Set[String] = {
     adjacencySet(homeTerritory)
   }
 
@@ -59,7 +59,7 @@ object GameMap {
         if (adjacencySet.contains(base)) {
           adjacencySet(base) += neighbor
         } else {
-          adjacencySet += (base -> Set(neighbor))
+          adjacencySet += (base -> mutable.Set(neighbor))
         }
         val hackError: Unit = {}
       }
@@ -72,7 +72,7 @@ object GameMap {
     * @param baseTerritory the territory which we want to get the neighbors of.
     * @return the set of territories adjacent to baseTerritory
     */
-  def getNeighborsByName(baseTerritory: String): Set[String] = {
+  def getNeighborsByName(baseTerritory: String): mutable.Set[String] = {
     adjacencySet(baseTerritory)
   }
 
