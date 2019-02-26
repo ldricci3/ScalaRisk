@@ -5,12 +5,16 @@ class Player(val id: Int,
              val color: String,
              val name: String,
              val armies: Set[Army]) {
+  /**
   val requirements: Boolean = (color == "Red"
     || color == "Black"
     || color == "Yellow"
     || color == "Green"
     || color == "Blue")
   require(requirements, "Red, Black, Yellow, Green, Blue")
+    */
+
+  def this(id: Int, name: String, armies: Set[Army]) = this(id, "Colorless", name, armies)
 
   var territoryNames: List[String] = List()
   val colorRBG: (Int, Int, Int) = createRGB
@@ -33,6 +37,7 @@ class Player(val id: Int,
     case "Yellow" => (255, 255, 0)
     case "Green" => (0, 128, 0)
     case "Blue" => (0, 0, 255)
+    case "Colorless" => (127, 127, 127)
   }
 
   /**
