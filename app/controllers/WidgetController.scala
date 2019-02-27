@@ -50,10 +50,35 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
     val successFunction = { data: Data =>
       // This is the good case, where the form was successfully parsed as a Data object.
       val widget = Widget(name = data.name)
-      widgets.append(widget)
-      playerList = widget.name::playerList
-      playerCount += 1
-      Redirect(routes.WidgetController.listWidgets()).flashing("Success" -> " Player added!")
+      if (widget.name.toLowerCase() == "start") {
+        // This checks if the user submitted the start command, and then checks if the number of players is valid
+        if (playerCount < 3) {
+          Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Must have at least 3 players")
+        } else {
+          println("Starting Game") //Just here to show in sbt shell if user calling start was successful
+          //Call Game with playerList here
+          //Can attempt to redirect to game HTML later on
+          Redirect(routes.WidgetController.listWidgets()).flashing("Game Starting" -> " Please wait")
+        }
+      } else if (widget.name.toLowerCase() == "reset") {
+        // This checks if the user submitted the reset command, the resets all vars and the table of player names
+        widgets.clear()
+        playerList = List[String]()
+        playerCount = 0
+        Redirect(routes.WidgetController.listWidgets()).flashing("Success" -> " Player list reset!")
+      } else {
+        // This checks for duplicate names(case-sensitive), then adds the player if not a duplicate and count < 6
+        if (playerCount >= 6) {
+          Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Cannot have more than 6 players")
+        } else if (playerList.contains(widget.name)) {
+          Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Cannot have duplicate names")
+        } else {
+          widgets.append(widget)
+          playerList = widget.name :: playerList
+          playerCount += 1
+          Redirect(routes.WidgetController.listWidgets()).flashing("Success" -> " Player added!")
+        }
+      }
     }
 
     val formValidationResult = form.bindFromRequest

@@ -3,7 +3,8 @@
   @main("Players") {
 
     <h1>Players</h1>
-    <p>Please enter 3 to 6 players.</p>
+  <p><b>Please create 3 to 6 players by entering their name.</b></p>
+  <p>Enter <b>start</b> to start the game. Enter <b>reset</b> to reset the player list.</p>
 
     @* Flash shows updates to a page *@
     @request.flash.data.map{ case (name) =>
@@ -35,12 +36,8 @@
     @helper.form(postUrl) {
       @helper.CSRF.formField
 
-      @helper.inputText(form("name"))
+      @helper.inputText(form("Input:"))
 
-      <button>Create player</button>
+      <button>Submit</button>
     }
-
-    <p></p>
-    <button>Start Game</button>
-
-  }
+}
