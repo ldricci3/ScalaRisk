@@ -57,6 +57,9 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
         } else {
           println("Starting Game") //Just here to show in sbt shell if user calling start was successful
           //Call Game with playerList here
+          println(playerList)
+          val game: models.Game = new models.Game(playerList, List[String]());
+          println(game)
           //Can attempt to redirect to game HTML later on
           Redirect(routes.WidgetController.listWidgets()).flashing("Game Starting" -> " Please wait")
         }
