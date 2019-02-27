@@ -3,8 +3,8 @@ package models
 class Game(val names:  List[String], val colors: List[String]) {
   val requirements: Boolean =
     names.size >= 3 &&
-    names.size <= 6 &&
-    names.size == colors.size
+    names.size <= 6 //&&
+    //names.size == colors.size
   require(requirements, "Must have from 3 to 6 players")
 
   /** R3: Assigning initial allottment of armies */
@@ -15,7 +15,7 @@ class Game(val names:  List[String], val colors: List[String]) {
   }
   /** R1: 3-6 uniquely identifiable players */
   /** R2: Random turn order */
-  val namesAndColors: List[(String, String)] = names zip colors
+  val namesAndColors: List[(String, String)] = names.zipAll(colors, "", "")
   val players: List[Player] = scala.util.Random.shuffle(for (((name, color), id) <- namesAndColors.zipWithIndex) yield {
     new Player(id, color, name, baseArmy)
   })
@@ -62,6 +62,12 @@ class Game(val names:  List[String], val colors: List[String]) {
       currentPlayer.attack()
       currentPlayer.fortify()
     }
+  }
+
+  override def toString: String = {
+    (for (i <- players) yield {
+      i.toString()
+    }).toString()
   }
 }
 
