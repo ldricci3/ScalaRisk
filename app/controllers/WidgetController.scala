@@ -63,8 +63,8 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
       } else if (widget.name.toLowerCase() == "reset") {
         // This checks if the user submitted the reset command, the resets all vars and the table of player names
         widgets.clear()
-        var playerList = List[String]()
-        var playerCount = 0
+        playerList = List[String]()
+        playerCount = 0
         Redirect(routes.WidgetController.listWidgets()).flashing("Success" -> " Player list reset!")
       } else {
         // This checks for duplicate names(case-sensitive), then adds the player if not a duplicate and count < 6
