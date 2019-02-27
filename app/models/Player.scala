@@ -38,6 +38,7 @@ class Player(val id: Int,
     case "Green" => (0, 128, 0)
     case "Blue" => (0, 0, 255)
     case "Colorless" => (127, 127, 127)
+    case "" => (127, 127, 127)
   }
 
   /**
@@ -104,4 +105,8 @@ class Player(val id: Int,
     * @return hashcode
     */
   final override def hashCode: Int = (id, color, name).##
+
+  override def toString: String = {
+    this.name + " has " + this.armiesOnReserve + " armies"
+  }
 }
