@@ -20,9 +20,9 @@ import play.api.mvc._
 class WidgetController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc) {
   import WidgetForm._
 
-  private val widgets = scala.collection.mutable.ArrayBuffer(Widget(null))
-  var playerList = List[String]()
-  var playerCount = 0
+  private val widgets = scala.collection.mutable.ArrayBuffer(Widget(""))
+  private var playerList = List[String]()
+  private var playerCount = 0
 
   // The URL to the widget.  You can call this directly from the template, but it
   // can be more convenient to leave the template completely stateless i.e. all

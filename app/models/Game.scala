@@ -70,5 +70,3 @@ class Game(val names:  List[String], val colors: List[String]) {
     }).toString()
   }
 }
-
-

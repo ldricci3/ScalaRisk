@@ -15,7 +15,7 @@ class Continent(val name: String,
     */
   def this(name: String, bonusArmyAllotment: Int, territoryNames: List[String]) =
     this(name, bonusArmyAllotment, -1, territoryNames)
-  
+
   /**
     * Determines if a continent has only 1 occupant
     * @return whether or not continent is controlled by a single player
