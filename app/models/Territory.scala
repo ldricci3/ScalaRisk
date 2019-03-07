@@ -2,7 +2,8 @@ package models
 
 class Territory(val name: String,
                 val continent: String,
-                var numArmies: Int) {
+                var numArmies: Int,
+                val position: (Int, Int)) {
   var occupant: Player = new Player(2340, "Red", "Scala", Set.empty[Army])
 
   /**
