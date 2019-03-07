@@ -16,8 +16,8 @@ class Territory(val name: String,
     * @param continent continent that contains this territory
     * @return
     */
-  def this(name: String, continent: String) =
-    this(name, continent, 1)
+  def this(name: String, continent: String, position: (Int, Int)) =
+    this(name, continent, 1, position)
 
   /**
     * Setter for occupant
