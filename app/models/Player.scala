@@ -107,6 +107,9 @@ class Player(val id: Int,
   final override def hashCode: Int = (id, color, name).##
 
   override def toString: String = {
-    this.name + " has " + this.armiesOnReserve + " armies"
+    var output: String = this.name + " has " + this.armiesOnReserve + " armies" + "\n"
+    output +
+      (for (tName: String <- territoryNames) yield { tName + "\n" }).foldLeft("")((a: String, b: String) => a + b) +
+      "\n"
   }
 }

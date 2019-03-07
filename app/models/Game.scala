@@ -20,7 +20,7 @@ class Game(val names:  List[String], val colors: List[String]) {
     new Player(id, color, name, baseArmy)
   })
 
-  val currentTurn: Int = 0
+  var currentTurn: Int = 0
 
   /** Loads map, continent, territory data. */
   def setupGameMap(): Unit = {
@@ -30,38 +30,55 @@ class Game(val names:  List[String], val colors: List[String]) {
     GameMap.setupContinentsAndTerritories()
   }
 
-  val M1only: Boolean = true
-  if (!M1only) {
-    /**
-      * Checks if all continents are controlled by a single player
-      * Also grants continent army bonus
-      * @return whether game is still in progress
-      */
-    def gameInProgress: Boolean = {
-      var inProgress: Boolean = false
-      var continentControllers: Set[Player] = Set.empty[Player]
-      for (c: Continent <- GameMap.getContinents) {
-        if (c.getOccupancy == 1) {
-          val aTerritory = c.getTerritoryNames.head
-          val bonus: Int = c.getArmyAllotment
-          GameMap.territoryMap(aTerritory).getOccupant.allocateMoreArmies(bonus)
+  def randomTerritoryAssignment(): Unit = {
+    var unoccupiedTerritories: scala.collection.Set[String] = GameMap.territoryMap.keySet
+    while (unoccupiedTerritories.nonEmpty) {
+      val randomPlayer: Player = players(Dice.random.nextInt(players.length))
+      val nextTerritoryName: String = unoccupiedTerritories.head
+      val nextTerritory: Territory = GameMap.territoryMap(nextTerritoryName)
+      val nextContinentName: String  = nextTerritory.continent
+      val nextContinent: Continent = GameMap.continentMap(nextContinentName)
+      //update player
+      randomPlayer.territoryNames = nextTerritoryName :: randomPlayer.territoryNames
+      //update territory
+      nextTerritory.occupant = randomPlayer
+      //update continent
+      nextContinent.occupantNames += randomPlayer.name
+      //update unoccupiedTerritories
+      unoccupiedTerritories = unoccupiedTerritories - nextTerritoryName
+    }
+  }
 
-          continentControllers += GameMap.territoryMap(aTerritory).getOccupant
-          if (continentControllers.size > 1) {
-            inProgress = true
-          }
-        } else {
+  /**
+    * Checks if all continents are controlled by a single player
+    * Also grants continent army bonus
+    * @return whether game is still in progress
+    */
+  def gameInProgress: Boolean = {
+    var inProgress: Boolean = false
+    var continentControllers: Set[Player] = Set.empty[Player]
+    for (c: Continent <- GameMap.getContinents) {
+      if (c.getOccupancy() == 1) {
+        val aTerritory = c.getTerritoryNames.head
+        val bonus: Int = c.getArmyAllotment
+
+        GameMap.territoryMap(aTerritory).getOccupant.allocateMoreArmies(bonus)
+        continentControllers += GameMap.territoryMap(aTerritory).getOccupant
+
+        if (continentControllers.size > 1) {
           inProgress = true
         }
+      } else {
+        inProgress = true
       }
-      inProgress
     }
-    while (gameInProgress) {
-      val currentPlayer = players(currentTurn % numPlayers)
-      currentPlayer.placeArmies()
-      currentPlayer.attack()
-      currentPlayer.fortify()
-    }
+    inProgress
+  }
+  while (gameInProgress) {
+    val currentPlayer = players(currentTurn % numPlayers)
+    currentPlayer.placeArmies()
+    currentPlayer.attack()
+    currentPlayer.fortify()
   }
 
   override def toString: String = {

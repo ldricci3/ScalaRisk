@@ -4,6 +4,7 @@ class Continent(val name: String,
                 val bonusArmyAllotment: Int,
                 val occupancy: Int,
                 val territoryNames: List[String]) {
+  var occupantNames: Set[String] = Set.empty[String]
   /**
     * Constructor Chaining.
     * occupancy defaults to -1.
@@ -42,7 +43,7 @@ class Continent(val name: String,
     *     territory within this continent
     * @return occupancy
     */
-  def getOccupancy: Int = occupancy
+  def getOccupancy(): Int = occupantNames.size
 
   /**
     * Getter for territories
