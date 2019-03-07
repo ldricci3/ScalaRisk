@@ -4,7 +4,7 @@
 
     <h1>Players</h1>
   <p><b>Please create 3 to 6 players by entering their name.</b></p>
-  <p>Enter <b>start</b> to start the game. Enter <b>reset</b> to reset the player list.</p>
+  <p>Press <b>Start Game</b> to start the game. Press <b>Reset</b> to reset the player list.</p>
 
     @* Flash shows updates to a page *@
     @request.flash.data.map{ case (name) =>
@@ -36,8 +36,26 @@
     @helper.form(postUrl) {
       @helper.CSRF.formField
 
-      @helper.inputText(form("Input:"))
+      @helper.inputText(form("Name:"))
 
       <button>Submit</button>
     }
+
+    @* Table to group start and reset buttons *@
+    <table>
+      <tr>
+        <td>
+          @* Start button *@
+          <form action="@controllers.routes.WidgetController.start">
+            <input type="submit" value="Start Game" />
+          </form>
+        </td>
+        <td>
+          @* Reset button *@
+          <form action="@controllers.routes.WidgetController.reset">
+            <input type="submit" value="Reset" />
+          </form>
+        </td>
+      </tr>
+    </table>
 }
