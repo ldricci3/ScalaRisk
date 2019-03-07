@@ -1,7 +1,22 @@
+@(game: Game)
+
+<head>
+    <title>Game</title>
+    <link href="stylesheets/gameStyle.css" rel="stylesheet">
+</head>
+
 @main("Game") {
     <section id="top">
         <div class="wrapper">
             <h1>Game</h1>
+            <div class="gameMap">
+                <img src="images/world-domination-game-board-2.1.1.jpg">
+                @for(i <- GameMap.getTerritories) {
+                    <div class="territory" id="@i.name" style="position: absolute; top: @(i.position._1 + "%"); left: @(i.position._2 + "%")">
+                        <img src="../../public/images/favicon.png">
+                    </div>
+                }
+            </div>
         </div>
     </section>
 }
