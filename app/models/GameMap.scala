@@ -39,8 +39,10 @@ object GameMap {
     * @return sources for country and adjacency information
     */
   def getResources: (Source, Source) = mapType match {
-    case "basic" => (Source.fromFile("countries.txt"), Source.fromFile("connections.txt"))
-    case "test" => (Source.fromFile("test-countries.txt"), Source.fromFile("test-connections.txt"))
+    case "basic" => (Source.fromInputStream(getClass.getResourceAsStream("/conf/map-info/countries.txt")),
+      Source.fromInputStream(getClass.getResourceAsStream("/conf/map-info/connections.txt")))
+    case "test" => (Source.fromInputStream(getClass.getResourceAsStream("/conf/map-info/test-countries.txt")),
+          Source.fromInputStream(getClass.getResourceAsStream("/conf/map-info/test-connections.txt")))
   }
 
   /**
