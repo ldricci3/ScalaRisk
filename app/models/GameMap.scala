@@ -8,7 +8,7 @@ object GameMap {
     mapType == "basic" || mapType == "test"
   require(validMapTypes, "map type must be either \"basic\" or \"test\"")
 
-  val (continentSource, adjacencySource) = getResources
+  var (continentSource, adjacencySource): (Source, Source) = getResources
   var adjacencySet: mutable.Map[String, mutable.Set[String]] = mutable.Map.empty[String, mutable.Set[String]]
 
   var territoryMap: mutable.Map[String, Territory] = mutable.Map.empty[String, Territory]
@@ -38,11 +38,17 @@ object GameMap {
     * Gets the proper map information for the given mapType
     * @return sources for country and adjacency information
     */
+
   def getResources: (Source, Source) = mapType match {
-    case "basic" => (Source.fromInputStream(getClass.getResourceAsStream("/conf/map-info/countries.txt")),
-      Source.fromInputStream(getClass.getResourceAsStream("/conf/map-info/connections.txt")))
-    case "test" => (Source.fromInputStream(getClass.getResourceAsStream("/conf/map-info/test-countries.txt")),
-          Source.fromInputStream(getClass.getResourceAsStream("/conf/map-info/test-connections.txt")))
+    //case "basic" => (Source.fromFile("/conf/map-info/countries.txt"), Source.fromFile("/conf/map-info/countries.txt"))
+    case "basic" => (
+      scala.io.Source.fromInputStream(classOf[Nothing].getResourceAsStream("/map-info/continents.txt")),
+      scala.io.Source.fromInputStream(classOf[Nothing].getResourceAsStream("/map-info/connections.txt"))
+    )
+    case "test" => (
+      scala.io.Source.fromInputStream(classOf[Nothing].getResourceAsStream("/map-info/test-continents.txt")),
+      scala.io.Source.fromInputStream(classOf[Nothing].getResourceAsStream("/map-info/test-connections.txt"))
+    )
   }
 
   /**
@@ -50,13 +56,22 @@ object GameMap {
     *   and sets the adjacentTerritories
     */
   def setupAdjacentTerritories(): Unit = {
-    val lines: Array[String] = adjacencySource.getLines.toArray
-
+    //println("start debug==========================")
+    //val is: InputStream = classOf[Nothing].getResourceAsStream("/map-info/connections.txt")
+    //val lines0: Iterator[String] = scala.io.Source.fromInputStream(is).getLines()
+    //val lines: Array[String] = lines0.toArray
+    val lines: Array[String] = adjacencySource.getLines().toArray
     for (line <- lines) {
       val tokens: Array[String] = line.split(", ")
       val listTokens: List[String] = tokens.toList
       val base: String = listTokens.head
       val neighbors: List[String] = listTokens.tail
+
+      println("base: " + base)
+      for (s <- neighbors) {
+        print(s + " ")
+      }
+      println("\n")
 
       for (neighbor <- neighbors) {
         if (adjacencySet.contains(base)) {
@@ -67,6 +82,7 @@ object GameMap {
         val hackError: Unit = {}
       }
     }
+    println("closing adjacencySource")
     adjacencySource.close()
   }
 
@@ -93,6 +109,7 @@ object GameMap {
   /** Loads continent information from source file. */
   def setupContinentsAndTerritories(): Unit = {
     val lines: Array[String] = continentSource.getLines.toArray
+    println("continent lines read.")
     for (line <- lines) {
       val tokens: Array[String] = line.split(", ")
       val listTokens: List[String] = tokens.toList
@@ -101,6 +118,12 @@ object GameMap {
       val withoutName: List[String] = listTokens.tail
       val bonusArmies: Int = withoutName.head.toInt
       val territoryNames: List[String] = withoutName.tail
+
+      println("continent: " + continentName)
+      for (tn <- territoryNames) {
+        println(tn)
+      }
+      println("\n")
 
       if (continentMap.contains(continentName)) {
         println(s"File Content Error: $continentName found in different lines.")
@@ -116,6 +139,7 @@ object GameMap {
         }
       }
     }
+    println("closing continentSource")
     continentSource.close()
   }
 
