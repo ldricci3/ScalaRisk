@@ -12,6 +12,7 @@
                 @for(i <- GameMap.getTerritories) {
                     <div class="territory" id="@i.name" style="position: absolute; top: @(i.position._1 + "%"); left: @(i.position._2 + "%")">
                         <img src="@routes.Assets.versioned("images/favicon.png")">
+                        <p>@i.numArmies</p>
                     </div>
                 }
             </div>

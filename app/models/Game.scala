@@ -22,6 +22,7 @@ class Game(val names:  List[String], val colors: List[String]) {
 
   var currentTurn: Int = 0
   setupGameMap()
+  randomTerritoryAssignment()
 
   /** Loads map, continent, territory data. */
   def setupGameMap(): Unit = {
@@ -75,6 +76,7 @@ class Game(val names:  List[String], val colors: List[String]) {
     }
     inProgress
   }
+
 
   def runGame(): Unit = {
     while (gameInProgress) {
