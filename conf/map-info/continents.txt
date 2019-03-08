@@ -2,5 +2,5 @@ Africa, 3, North Africa, Egypt, Congo, East Africa, South Africa, Madagascar
 Asia, 7, Yakutsk, Kamchatka, Ural, Siberia, Irkutsk, Japan, Afghanistan, China, Mongolia, Middle East, India, Siam
 Australia, 2, Indonesia, New Guinea, Western Australia, Eastern Australia
 Europe, 5, Iceland, Scandanavia, Great Britain, Northern Europe, Ukraine, Western Europe, Southern Europe
-North America, 5, Alaska, Northwet Territory, Greenland, Alberta, Ontario, Quebec, Western United States, Eastern United States, Central America
+North America, 5, Alaska, Northwest Territory, Greenland, Alberta, Ontario, Quebec, Western United States, Eastern United States, Central America
 South America, 2, Venezuela, Brazil, Peru, Argentina
