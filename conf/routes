@@ -15,4 +15,4 @@ GET     /start                      controllers.WidgetController.start
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 # Game
-GET     /game/                      controllers.GameController.game
+GET     /startGame/:playerNames     controllers.GameController.startGame(playerNames)
