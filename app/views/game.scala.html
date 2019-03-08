@@ -11,7 +11,7 @@
                 <img src="@routes.Assets.versioned("images/world-domination-game-board-2.1.1.jpg")" style="max-width: 100%; max-height: 100%; ">
                 @for(i <- GameMap.getTerritories) {
                     <div class="territory" id="@i.name" style="position: absolute; top: @(i.position._1 + "%"); left: @(i.position._2 + "%")">
-                        <img src="@routes.Assets.versioned("images/favicon.png")">
+                        <img src="@routes.Assets.versioned("images/inf.png")">
                         <p>@i.numArmies</p>
                     </div>
                 }
