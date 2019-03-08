@@ -1,3 +1,4 @@
+@(game: models.Game)
 <head>
     <title>Game</title>
     <link href="stylesheets/gameStyle.css" rel="stylesheet">
@@ -16,6 +17,7 @@
                     </div>
                 }
             </div>
+            <p>Current Player@game.getCurrentPlayer().name</p>
         </div>
     </section>
 }
