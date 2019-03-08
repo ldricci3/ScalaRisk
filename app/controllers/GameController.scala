@@ -14,8 +14,8 @@ class GameController @Inject()(cc: ControllerComponents)(implicit assetsFinder: 
     val c = models.GameMap.getClass.getDeclaredConstructor()
     c.setAccessible(true)
     c.newInstance()
+    val game: models.Game = new models.Game(playerList, List("Red", "White", "Yellow", "Green", "Blue", "Orange"))
 
-    val game: models.Game = new models.Game(playerList, List[String]())
     Ok(views.html.game(game))
   }
 }
