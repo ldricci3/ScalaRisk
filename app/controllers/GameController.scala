@@ -10,8 +10,8 @@ class GameController @Inject()(cc: ControllerComponents)(implicit assetsFinder: 
   def startGame(playerNames: String) = Action {
     val playerArray = playerNames.split(",")
     val playerList = playerArray.toList
-    val game: models.Game = new models.Game(playerList, List[String]())
+    val game: models.Game = new models.Game(playerList, List("Red", "White", "Yellow", "Green", "Blue", "Orange"))
     println(game)
-    Ok(views.html.game())
+    Ok(views.html.game(game))
   }
 }
