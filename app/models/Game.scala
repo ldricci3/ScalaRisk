@@ -77,13 +77,7 @@ class Game(val names:  List[String], val colors: List[String]) {
     inProgress
   }
 
-<<<<<<< HEAD
-  while (gameInProgress) {
-    val currentPlayer = players(currentTurn % numPlayers)
-    currentPlayer.placeArmies()
-    currentPlayer.attack()
-    currentPlayer.fortify()
-=======
+
   def runGame(): Unit = {
     while (gameInProgress) {
       val currentPlayer = players(currentTurn % numPlayers)
@@ -91,7 +85,6 @@ class Game(val names:  List[String], val colors: List[String]) {
       currentPlayer.attack()
       currentPlayer.fortify()
     }
->>>>>>> master
   }
 
 
