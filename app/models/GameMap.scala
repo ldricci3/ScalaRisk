@@ -38,9 +38,7 @@ object GameMap {
     * Gets the proper map information for the given mapType
     * @return sources for country and adjacency information
     */
-
   def getResources: (Source, Source) = mapType match {
-    //case "basic" => (Source.fromFile("/conf/map-info/countries.txt"), Source.fromFile("/conf/map-info/countries.txt"))
     case "basic" => (
       scala.io.Source.fromInputStream(classOf[Nothing].getResourceAsStream("/map-info/continents.txt")),
       scala.io.Source.fromInputStream(classOf[Nothing].getResourceAsStream("/map-info/connections.txt"))
@@ -56,22 +54,12 @@ object GameMap {
     *   and sets the adjacentTerritories
     */
   def setupAdjacentTerritories(): Unit = {
-    //println("start debug==========================")
-    //val is: InputStream = classOf[Nothing].getResourceAsStream("/map-info/connections.txt")
-    //val lines0: Iterator[String] = scala.io.Source.fromInputStream(is).getLines()
-    //val lines: Array[String] = lines0.toArray
     val lines: Array[String] = adjacencySource.getLines().toArray
     for (line <- lines) {
       val tokens: Array[String] = line.split(", ")
       val listTokens: List[String] = tokens.toList
       val base: String = listTokens.head
       val neighbors: List[String] = listTokens.tail
-
-      println("base: " + base)
-      for (s <- neighbors) {
-        print(s + " ")
-      }
-      println("\n")
 
       for (neighbor <- neighbors) {
         if (adjacencySet.contains(base)) {
@@ -82,8 +70,6 @@ object GameMap {
         val hackError: Unit = {}
       }
     }
-    println("closing adjacencySource")
-    adjacencySource.close()
   }
 
   /**
@@ -95,21 +81,9 @@ object GameMap {
     adjacencySet(baseTerritory)
   }
 
-  /** Prints Adjacency Set */
-  def printAdj(): Unit = {
-    for ((k, v) <- adjacencySet) {
-      var accum = s"$k: "
-      for (adj: String <- v) {
-        accum += adj + " "
-      }
-      println(accum)
-    }
-  }
-
   /** Loads continent information from source file. */
   def setupContinentsAndTerritories(): Unit = {
     val lines: Array[String] = continentSource.getLines.toArray
-    println("continent lines read.")
     for (line <- lines) {
       val tokens: Array[String] = line.split(", ")
       val listTokens: List[String] = tokens.toList
@@ -118,12 +92,6 @@ object GameMap {
       val withoutName: List[String] = listTokens.tail
       val bonusArmies: Int = withoutName.head.toInt
       val territoryNames: List[String] = withoutName.tail
-
-      println("continent: " + continentName)
-      for (tn <- territoryNames) {
-        println(tn)
-      }
-      println("\n")
 
       if (continentMap.contains(continentName)) {
         println(s"File Content Error: $continentName found in different lines.")
@@ -139,32 +107,6 @@ object GameMap {
           }
         }
       }
-    }
-    println("closing continentSource")
-    continentSource.close()
-  }
-
-  /** Prints continents and their internal territories */
-  def printCT(): Unit = {
-    for (cont: Continent <- getContinents) {
-      val contName: String = cont.name
-      val bonus: Int = cont.bonusArmyAllotment
-      val territories: List[String] = cont.territoryNames
-      var accum = s"$contName($bonus):\n"
-      for (terr: String <- territories) {
-        accum += "\t" + terr + "\n"
-      }
-      println(accum)
-    }
-  }
-
-  /** Prints territories and their parent continent */
-  def printTC(): Unit = {
-    for (terry: Territory <- getTerritories) {
-      val terryName: String = terry.name
-      val contName: String = terry.continent
-      val armies: Int = terry.numArmies
-      println(s"$terryName: $contName: numArmies($armies)")
     }
   }
 
