@@ -45,14 +45,13 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
     }
   }
 
-  // Corresponds to start game button to begin the game. Checks for min player amount and if satisfied creates an
-  // instance of game and redirects to the game page.
+  // Corresponds to start game button to begin the game. Checks for min player amount and if satisfied creates a comma-
+  // separated string of the player names to pass to the game controller.
   def start = Action {
     if (playerCount < 3) {
       Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Must have at least 3 players")
     } else {
-      val game: models.Game = new models.Game(playerList, List[String]());
-      Redirect(routes.GameController.game())
+      Redirect(routes.GameController.startGame(playerList.mkString(",")))
     }
   }
 
@@ -73,11 +72,14 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
     val successFunction = { data: Data =>
       // This is the good case, where the form was successfully parsed as a Data object.
       val widget = Widget(name = data.name)
-      // This checks for duplicate names(case-sensitive), then adds the player if not a duplicate and count < 6
+      // This checks for duplicate names(case-sensitive) & reserved characters, then adds the player if not a duplicate
+      // and count < 6
       if (playerCount >= 6) {
         Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Cannot have more than 6 players")
       } else if (playerList.contains(widget.name)) {
         Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Cannot have duplicate names")
+      } else if (widget.name.contains(",")) {
+        Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Invalid character in name: comma")
       } else {
         widgets.append(widget)
         playerList = widget.name :: playerList

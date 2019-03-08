@@ -21,8 +21,8 @@ class Game(val names:  List[String], val colors: List[String]) {
   })
 
   var currentTurn: Int = 0
-  this.setupGameMap()
-  this.randomTerritoryAssignment()
+  setupGameMap()
+  randomTerritoryAssignment()
 
   /** Loads map, continent, territory data. */
   def setupGameMap(): Unit = {
@@ -77,12 +77,23 @@ class Game(val names:  List[String], val colors: List[String]) {
     inProgress
   }
 
+<<<<<<< HEAD
   while (gameInProgress) {
     val currentPlayer = players(currentTurn % numPlayers)
     currentPlayer.placeArmies()
     currentPlayer.attack()
     currentPlayer.fortify()
+=======
+  def runGame(): Unit = {
+    while (gameInProgress) {
+      val currentPlayer = players(currentTurn % numPlayers)
+      currentPlayer.placeArmies()
+      currentPlayer.attack()
+      currentPlayer.fortify()
+    }
+>>>>>>> master
   }
+
 
   override def toString: String = {
     (for (i <- players) yield {
