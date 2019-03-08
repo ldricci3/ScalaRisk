@@ -41,4 +41,9 @@ class Territory(val name: String,
   def isOccupiedBy(aPlayer: Player): Boolean = {
     aPlayer.equals(this.occupant)
   }
+
+  /** Place more armies on this territory. */
+  def addArmies(n: Int): Unit = {
+    numArmies = numArmies + n
+  }
 }

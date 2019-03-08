@@ -1,5 +1,8 @@
 package models
 
+import scala.collection.mutable
+import scala.io.Source
+
 class Game(val names:  List[String], val colors: List[String]) {
   val requirements: Boolean =
     names.size >= 3 &&
@@ -21,17 +24,18 @@ class Game(val names:  List[String], val colors: List[String]) {
   })
 
   var currentTurn: Int = 0
-  setupGameMap()
+  setupGame()
   randomTerritoryAssignment()
 
   /** Loads map, continent, territory data. */
-  def setupGameMap(): Unit = {
+  def setupGame(): Unit = {
     GameMapType.mapType = "basic"
     GameMap.getResources
     GameMap.setupAdjacentTerritories()
     GameMap.setupContinentsAndTerritories()
   }
 
+  /**R6: Players have their armies assigned to territories*/
   def randomTerritoryAssignment(): Unit = {
     var unoccupiedTerritories: scala.collection.Set[String] = GameMap.territoryMap.keySet
     while (unoccupiedTerritories.nonEmpty) {
@@ -49,6 +53,35 @@ class Game(val names:  List[String], val colors: List[String]) {
       //update unoccupiedTerritories
       unoccupiedTerritories = unoccupiedTerritories - nextTerritoryName
     }
+
+    //evenly distribute armies across all occupied territories
+    var checkTotal: Int = 0
+    for (p: Player <- players) {
+      var checkMath: Int = 0
+      p.armiesOnReserve = p.armiesOnReserve - 1  //subtract off the armies we place to claim each territory
+      val div: Int = p.armiesOnReserve / p.getNumTerritories()
+      var rem: Int = p.armiesOnReserve % p.getNumTerritories()
+      for (t: String <- p.territoryNames) {
+        assert(GameMap.territoryMap(t).occupant.equals(p))
+        GameMap.territoryMap(t).addArmies(div)
+        checkMath = checkMath + div
+      }
+      for (ii <- 1 to rem) {
+        val tName: String = p.territoryNames(Dice.random.nextInt(p.getNumTerritories()))
+        GameMap.territoryMap(tName).addArmies(1)
+        checkMath = checkMath + 1
+      }
+      p.armiesOnReserve = 0
+      assert(p.armies.size - 1 == checkMath)
+      checkTotal = checkTotal + 1 + checkMath
+    }
+    val realTotal = players.size match {
+      case 3 => 105
+      case 4 => 120
+      case 5 => 125
+      case 6 => 120
+    }
+    assert(checkTotal == realTotal)
   }
 
   /**
@@ -77,16 +110,16 @@ class Game(val names:  List[String], val colors: List[String]) {
     inProgress
   }
 
+  def getCurrentPlayer(): Player = players(currentTurn % numPlayers)
 
   def runGame(): Unit = {
     while (gameInProgress) {
-      val currentPlayer = players(currentTurn % numPlayers)
+      val currentPlayer = getCurrentPlayer()
       currentPlayer.placeArmies()
       currentPlayer.attack()
       currentPlayer.fortify()
     }
   }
-
 
   override def toString: String = {
     (for (i <- players) yield {
