@@ -11,7 +11,10 @@
                 <img src="@routes.Assets.versioned("images/world-domination-game-board-2.1.1.jpg")" style="max-width: 100%; max-height: 100%; ">
                 @for(i <- GameMap.getTerritories) {
                     <div class="territory" id="@i.name" style="position: absolute; top: @(i.position._1 + "%"); left: @(i.position._2 + "%")">
-                        <img src="@routes.Assets.versioned("images/favicon.png")">
+                        <img src="@routes.Assets.versioned("images/inf.png")" style="position: relative; width: 2.5%; height: 4%">
+                        <div class="numCircle" style="position: relative; border-radius: 50%; width: 10%; height: 25%; padding: 1px; background: #fff; border: 1px solid #666; color: #666; text-align: center; font: 40% Arial, sans-serif;">
+                            <p>@i.numArmies</p>
+                        </div>
                     </div>
                 }
             </div>
