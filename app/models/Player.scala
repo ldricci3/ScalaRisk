@@ -112,4 +112,6 @@ class Player(val id: Int,
       (for (tName: String <- territoryNames) yield { tName + "\n" }).foldLeft("")((a: String, b: String) => a + b) +
       "\n"
   }
+
+  def getNumTerritories(): Int = this.territoryNames.length
 }
