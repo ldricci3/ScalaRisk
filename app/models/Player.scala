@@ -37,6 +37,8 @@ class Player(val id: Int,
     case "Yellow" => (255, 255, 0)
     case "Green" => (0, 128, 0)
     case "Blue" => (0, 0, 255)
+    case "Orange" => (255,165,0)
+    case "White" => (255, 255, 255)
     case "Colorless" => (127, 127, 127)
     case "" => (127, 127, 127)
   }

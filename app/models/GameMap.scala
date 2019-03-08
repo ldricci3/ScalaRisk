@@ -83,7 +83,7 @@ object GameMap {
       }
     }
     println("closing adjacencySource")
-    adjacencySource.close()
+    //adjacencySource.close()
   }
 
   /**
@@ -141,7 +141,7 @@ object GameMap {
       }
     }
     println("closing continentSource")
-    continentSource.close()
+    //continentSource.close()
   }
 
   /** Prints continents and their internal territories */
