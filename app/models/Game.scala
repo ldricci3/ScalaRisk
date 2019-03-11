@@ -112,6 +112,8 @@ class Game(val names:  List[String], val colors: List[String]) {
 
   def getCurrentPlayer(): Player = players(currentTurn % numPlayers)
 
+  def getPlayers(): List[Player] = players
+
   def runGame(): Unit = {
     while (gameInProgress) {
       val currentPlayer = getCurrentPlayer()
