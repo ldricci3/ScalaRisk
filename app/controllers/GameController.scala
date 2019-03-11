@@ -18,4 +18,7 @@ class GameController @Inject()(cc: ControllerComponents)(implicit assetsFinder: 
 
     Ok(views.html.game(game))
   }
+
+  // Handle user input form here
+
 }

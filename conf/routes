@@ -16,3 +16,4 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 # Game
 GET     /startGame/:playerNames     controllers.GameController.startGame(playerNames)
+#POST    /game                       controllers.GameController.actionHandler

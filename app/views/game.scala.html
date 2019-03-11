@@ -8,7 +8,6 @@
 @main("Game") {
     <section id="top">
         <div class="wrapper">
-            <h1>Game</h1>
             <div class="gameMap" style="position: relative;">
                 <img src="@routes.Assets.versioned("images/world-domination-game-board-2.1.1.jpg")" style="max-width: 100%; max-height: 100%; ">
                 @for(i <- GameMap.getTerritories) {
@@ -23,7 +22,35 @@
                     </div>
                 }
             </div>
-            <p>Current Player@game.getCurrentPlayer().name</p>
+            @* Table to organize game stats and controls *@
+            <table><tr>
+                <td><b>Game Status</b></td><td><b>Game Controls</b></td>
+            </tr>
+            <tr>
+                <td>Current Player: @game.getCurrentPlayer().name</td>
+                <td>
+                Game Command Input Box Here
+                <button>Submit</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Current Action: (description here)</td>
+            </tr>
+            <tr>
+                @* Nested table for player color *@
+                <td><table><tr><td><b>Player Color</b></td></tr>
+                    @for(i <- game.getPlayers()) {
+                        <tr><td>@i.name: @i.color</td></tr>
+                    }
+                </table></td>
+                @* Nested table for listing commands *@
+                <td><table><tr><td><b>Game Commands</b></td></tr>
+                    <tr><td><b>Attact(player name)</b> - Attacks provided player</td></tr>
+                    <tr><td><b>Fortify(something...)</b> - Fortifies something....</td></tr>
+                    <tr><td><b>Test(something......)</b> - Does something.........</td></tr>
+                </table></td>
+            </tr>
+            </table>
         </div>
     </section>
 }
