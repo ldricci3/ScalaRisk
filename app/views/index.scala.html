@@ -1,10 +1,12 @@
 @()
 
-  @main("Welcome to Risk!") {
+  @main("") {
     <div>
       <ul>
         <h1>Welcome to the game of Risk!</h1>
-        <li>Click here to <a href="@routes.WidgetController.listWidgets">Start Game</a></li>
+          <a href="@routes.WidgetController.listWidgets">
+            <button type="button" class="btn btn-dark btn-large">Start Game</button>
+          </a>
       </ul>
     </div>
   }
