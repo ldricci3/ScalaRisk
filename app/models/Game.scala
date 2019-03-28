@@ -38,20 +38,22 @@ class Game(val names:  List[String], val colors: List[String]) {
   /**R6: Players have their armies assigned to territories*/
   def randomTerritoryAssignment(): Unit = {
     var unoccupiedTerritories: scala.collection.Set[String] = GameMap.territoryMap.keySet
-    while (unoccupiedTerritories.nonEmpty) {
-      val randomPlayer: Player = players(Dice.random.nextInt(players.length))
+    var i: Int = 0
+    while(unoccupiedTerritories.nonEmpty) {
+      val currPlayer: Player = players(i % players.length)
       val nextTerritoryName: String = unoccupiedTerritories.head
       val nextTerritory: Territory = GameMap.territoryMap(nextTerritoryName)
       val nextContinentName: String  = nextTerritory.continent
       val nextContinent: Continent = GameMap.continentMap(nextContinentName)
       //update player
-      randomPlayer.territoryNames = nextTerritoryName :: randomPlayer.territoryNames
+      currPlayer.territoryNames = nextTerritoryName :: currPlayer.territoryNames
       //update territory
-      nextTerritory.occupant = randomPlayer
+      nextTerritory.occupant = currPlayer
       //update continent
-      nextContinent.occupantNames += randomPlayer.name
+      nextContinent.occupantNames += currPlayer.name
       //update unoccupiedTerritories
       unoccupiedTerritories = unoccupiedTerritories - nextTerritoryName
+      i = i + 1
     }
 
     //evenly distribute armies across all occupied territories
