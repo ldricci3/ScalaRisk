@@ -1,12 +1,22 @@
 @()
 
   @main("") {
-    <div>
-      <ul>
-        <h1>Welcome to the game of Risk!</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col"></div>
+        <div class="col-8">
+          <h1 class="text-center">Welcome to the game of Risk!</h1>
+        </div>
+        <div class="col"></div>
+      </div>
+      <div class="row top-buffer">
+        <div class="col-5"></div>
+        <div class="col-2 text-center">
           <a href="@routes.WidgetController.listWidgets">
-            <button type="button" class="btn btn-dark btn-large">Start Game</button>
+              <button type="button" class="btn btn-dark btn-large">Start Game</button>
           </a>
-      </ul>
+        </div>
+        <div class="col-5"></div>
+      </div>
     </div>
   }
