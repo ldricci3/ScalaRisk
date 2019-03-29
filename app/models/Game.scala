@@ -1,8 +1,5 @@
 package models
 
-import scala.collection.mutable
-import scala.io.Source
-
 class Game(val names:  List[String], val colors: List[String]) {
   val requirements: Boolean =
     names.size >= 3 &&
@@ -37,21 +34,23 @@ class Game(val names:  List[String], val colors: List[String]) {
 
   /**R6: Players have their armies assigned to territories*/
   def randomTerritoryAssignment(): Unit = {
-    var unoccupiedTerritories: scala.collection.Set[String] = GameMap.territoryMap.keySet
-    while (unoccupiedTerritories.nonEmpty) {
-      val randomPlayer: Player = players(Dice.random.nextInt(players.length))
-      val nextTerritoryName: String = unoccupiedTerritories.head
+    var unoccupied: Vector[String] = GameMap.territoryMap.keySet.toVector
+    var next: Int = 0
+    while (unoccupied.nonEmpty) {
+      val nextPlayer: Player = players(next)
+      val nextTerritoryName: String = unoccupied(Dice.random.nextInt(unoccupied.size))
       val nextTerritory: Territory = GameMap.territoryMap(nextTerritoryName)
       val nextContinentName: String  = nextTerritory.continent
       val nextContinent: Continent = GameMap.continentMap(nextContinentName)
       //update player
-      randomPlayer.territoryNames = nextTerritoryName :: randomPlayer.territoryNames
+      nextPlayer.territoryNames = nextTerritoryName :: nextPlayer.territoryNames
       //update territory
-      nextTerritory.occupant = randomPlayer
+      nextTerritory.occupant = nextPlayer
       //update continent
-      nextContinent.occupantNames += randomPlayer.name
+      nextContinent.occupantNames += nextPlayer.name
       //update unoccupiedTerritories
-      unoccupiedTerritories = unoccupiedTerritories - nextTerritoryName
+      unoccupied = unoccupied filterNot nextTerritoryName.==
+      next = (next + 1) % players.length
     }
 
     //evenly distribute armies across all occupied territories
@@ -113,15 +112,6 @@ class Game(val names:  List[String], val colors: List[String]) {
   def getCurrentPlayer(): Player = players(currentTurn % numPlayers)
 
   def getPlayers(): List[Player] = players
-
-  def runGame(): Unit = {
-    while (gameInProgress) {
-      val currentPlayer = getCurrentPlayer()
-      currentPlayer.placeArmies()
-      currentPlayer.attack()
-      currentPlayer.fortify()
-    }
-  }
 
   override def toString: String = {
     (for (i <- players) yield {

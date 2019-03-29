@@ -103,7 +103,7 @@ object GameMap {
             println(s"File Content Error: $territoryName appears more than once in a single line.")
           } else {
             val info: Array[String] = territoryName.split(" ")
-            territoryMap += (territoryName -> new Territory(info(0), continentName, (info(1).toDouble.toInt, info(2).toDouble.toInt)))
+            territoryMap += (info(0) -> new Territory(info(0), continentName, (info(1).toDouble.toInt, info(2).toDouble.toInt)))
           }
         }
       }
