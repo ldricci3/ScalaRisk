@@ -1,35 +1,38 @@
 package models
 
-class Game(val names:  List[String], val colors: List[String]) {
-  val requirements: Boolean =
-    names.size >= 3 &&
-    names.size <= 6 //&&
-    //names.size == colors.size
-  require(requirements, "Must have from 3 to 6 players")
+import scala.collection.mutable
+import scala.io.Source
 
-  /** R3: Assigning initial allottment of armies */
-  val numPlayers: Int = names.length
-  private var baseArmy: Set[Army] = Set()
-  for (i <- 1 to (50 - 5 * names.size)) {
-    baseArmy += new Infantry
-  }
-  /** R1: 3-6 uniquely identifiable players */
-  /** R2: Random turn order */
-  val namesAndColors: List[(String, String)] = names.zipAll(colors.take(names.length), "", "")
-  val players: List[Player] = scala.util.Random.shuffle(for (((name, color), id) <- namesAndColors.zipWithIndex) yield {
-    new Player(id, color, name, baseArmy)
-  })
-
+class Game() {
   var currentTurn: Int = 0
-  setupGame()
-  randomTerritoryAssignment()
+  var players: List[Player] = List.empty
+  var isStarted: Boolean = false
 
   /** Loads map, continent, territory data. */
-  def setupGame(): Unit = {
+  def setupGame(names:  List[String], colors: List[String]): Unit = {
+    val requirements: Boolean =
+      names.size >= 3 && names.size <= 6 //&&
+    //names.size == colors.size
+    require(requirements, "Must have from 3 to 6 players")
+
+    /** R3: Assigning initial allottment of armies */
+    val numPlayers: Int = names.length
+    var baseArmy: Set[Army] = Set()
+    for (i <- 1 to (50 - 5 * names.size)) yield {
+      baseArmy += new Infantry
+    }
+    /** R1: 3-6 uniquely identifiable players */
+    /** R2: Random turn order */
+    val namesAndColors: List[(String, String)] = names.zipAll(colors.take(names.length), "", "")
+    players = scala.util.Random.shuffle(for (((name, color), id) <- namesAndColors.zipWithIndex) yield {
+      new Player(id, color, name, baseArmy)
+    })
     GameMapType.mapType = "basic"
     GameMap.getResources
     GameMap.setupAdjacentTerritories()
     GameMap.setupContinentsAndTerritories()
+    randomTerritoryAssignment()
+    isStarted = true
   }
 
   /**R6: Players have their armies assigned to territories*/
@@ -109,7 +112,7 @@ class Game(val names:  List[String], val colors: List[String]) {
     inProgress
   }
 
-  def getCurrentPlayer(): Player = players(currentTurn % numPlayers)
+  def getCurrentPlayer(): Player = players(currentTurn % players.length)
 
   def getPlayers(): List[Player] = players
 
