@@ -7,7 +7,6 @@ class GameController @Inject()(cc: ControllerComponents)(implicit assetsFinder: 
   extends AbstractController(cc) {
 
   val game: models.Game = new models.Game()
-  print("A NEW GAMECONTROLLER HAS BEEN STARTED")
 
   // Gets comma-separated string of names and breaks them into a list, then instantiates the game
   def startGame(playerNames: String) = Action {
