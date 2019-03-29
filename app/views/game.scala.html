@@ -27,7 +27,18 @@
                 <td><b>Game Status</b></td><td><b>Game Controls</b></td>
             </tr>
             <tr>
-                <td>Current Player: @game.getCurrentPlayer().name</td>
+                <td>
+                    <table>
+                        <tr><td>Current Player: @game.getCurrentPlayer().color </td></tr>
+                        <tr><td>Armies Not Yet Placed: @game.getCurrentPlayer().armiesOnReserve</td></tr>
+                        <br>
+                        @if(game.getCurrentAction() == 1) {
+                            @for(t <- game.getCurrentPlayer().territoryNames) {
+                                <tr><td>@t</td></tr>
+                            }
+                        }
+                    </table>
+                </td>
                 <td>
                     @* Flash shows updates to a page *@
                     @request.flash.data.map{ case (name, value) =>
@@ -51,7 +62,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Current Action: (description here)</td>
+                <td>Current Action: @game.showCurrentAction()</td>
             </tr>
             <tr>
                 @* Nested table for player color *@
