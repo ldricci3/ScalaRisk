@@ -1,8 +1,5 @@
 package models
 
-import scala.collection.mutable
-import scala.io.Source
-
 class Game(val names:  List[String], val colors: List[String]) {
   val requirements: Boolean =
     names.size >= 3 &&
@@ -115,15 +112,6 @@ class Game(val names:  List[String], val colors: List[String]) {
   def getCurrentPlayer(): Player = players(currentTurn % numPlayers)
 
   def getPlayers(): List[Player] = players
-
-  def runGame(): Unit = {
-    while (gameInProgress) {
-      val currentPlayer = getCurrentPlayer()
-      currentPlayer.placeArmies()
-      currentPlayer.attack()
-      currentPlayer.fortify()
-    }
-  }
 
   override def toString: String = {
     (for (i <- players) yield {

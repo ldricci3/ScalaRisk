@@ -17,6 +17,7 @@ class Player(val id: Int,
   def this(id: Int, name: String, armies: Set[Army]) = this(id, "Colorless", name, armies)
 
   var territoryNames: List[String] = List()
+  var continentNames: List[String] = List()
   val colorRBG: (Int, Int, Int) = createRGB
   var armiesOnReserve: Int = armies.size
   var visited: mutable.Map[String, Boolean] = mutable.Map.empty[String, Boolean]
@@ -44,6 +45,26 @@ class Player(val id: Int,
   }
 
   /**
+    * Calculate and give player proper allotment of new armies.
+    * This does NOT include the Continent bonus. (calculated in Game.gameInProgress method)
+    */
+  val MIN_ALLOTMENT = 3
+  val NUM_TERRITORY_THRESHOLD = 9
+  val TERRITORIES_PER_ARMY = 3
+  def allocateTurnAllotment(): Unit = {
+    val numT: Int = getNumTerritories()
+    //regular allotment
+    if (numT < NUM_TERRITORY_THRESHOLD) {
+      allocateMoreArmies(MIN_ALLOTMENT)
+    } else {
+      allocateMoreArmies(numT / TERRITORIES_PER_ARMY)
+    }
+    //bonus continent allotment
+    for (cont <- continentNames) {
+      allocateMoreArmies(GameMap.continentMap(cont).bonusArmyAllotment)
+    }
+  }
+  /**
     * Give player more armies
     * @param numNewArmies number of new army drafts
     */
@@ -52,16 +73,16 @@ class Player(val id: Int,
   }
 
   /** Let this player deploy armies on occupied territories */
-  def placeArmies(): Unit = {
-    while (armiesOnReserve > 0) {
-      //deploy armies
-      armiesOnReserve -= 1
-    }
+  def placeArmies(territory: String, armies: Int): Unit = {
+    GameMap.territoryMap(territory).addArmies(armies)
+    armiesOnReserve -= armies
   }
 
   /** Let this player attack unoccupied neighboring territories */
   def attack(): Unit = {
-
+      //if attack is successful
+      //check if player has complete ownership of the continent.
+      //add continent name to continentNames
   }
 
   /** Fills visited Map values with false */
