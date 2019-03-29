@@ -16,6 +16,8 @@ class Player(val id: Int,
 
   def this(id: Int, name: String, armies: Set[Army]) = this(id, "Colorless", name, armies)
 
+  var currentAction: Int = 1
+  var previousAction: Int = 1
   var territoryNames: List[String] = List()
   var continentNames: List[String] = List()
   val colorRBG: (Int, Int, Int) = createRGB
@@ -74,15 +76,21 @@ class Player(val id: Int,
 
   /** Let this player deploy armies on occupied territories */
   def placeArmies(territory: String, armies: Int): Unit = {
+    currentAction = 1
     GameMap.territoryMap(territory).addArmies(armies)
     armiesOnReserve -= armies
+    previousAction = currentAction
   }
+
+  private def isOwnedTerritory(name: String): Boolean = territoryNames.contains(name)
 
   /** Let this player attack unoccupied neighboring territories */
   def attack(): Unit = {
+    currentAction = 2
       //if attack is successful
       //check if player has complete ownership of the continent.
       //add continent name to continentNames
+    previousAction = currentAction
   }
 
   /** Fills visited Map values with false */
@@ -109,7 +117,8 @@ class Player(val id: Int,
 
   /** Let this player transfer a certain amount of armies between two occupied and distinct territories. */
   def fortify(): Unit = {
-
+    currentAction = 3
+    previousAction = currentAction
   }
 
   /**

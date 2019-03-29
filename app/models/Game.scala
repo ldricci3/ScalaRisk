@@ -33,6 +33,8 @@ class Game() {
     GameMap.setupContinentsAndTerritories()
     randomTerritoryAssignment()
     isStarted = true
+
+    getCurrentPlayer().allocateTurnAllotment()
   }
 
   /**R6: Players have their armies assigned to territories*/
@@ -112,7 +114,17 @@ class Game() {
     inProgress
   }
 
+  def next(): Unit = currentTurn = (currentTurn + 1) % players.length
+
   def getCurrentPlayer(): Player = players(currentTurn % players.length)
+
+  def getCurrentAction(): Int = getCurrentPlayer().currentAction
+
+  def showCurrentAction(): String = getCurrentAction() match {
+    case 1 => "place armies"
+    case 2 => "attack enemy territories"
+    case 3 => "fortify your territories"
+  }
 
   def getPlayers(): List[Player] = players
 
