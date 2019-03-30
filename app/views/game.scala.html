@@ -29,9 +29,10 @@
             <tr>
                 <td>
                     <table>
-                        <tr><td>Current Player: @game.getCurrentPlayer().color </td></tr>
+                        <tr><td>Current Player: @game.getCurrentPlayer().name (@game.getCurrentPlayer().color) </td></tr>
                         <tr><td>Armies Not Yet Placed: @game.getCurrentPlayer().armiesOnReserve</td></tr>
-                        <br>
+                        <tr><td>Current Action: @game.showCurrentAction()</td></tr>
+                        <tr><td>Player's Territories:</td></tr>
                         @if(game.getCurrentAction() == 1) {
                             @for(t <- game.getCurrentPlayer().territoryNames) {
                                 <tr><td>@t</td></tr>
@@ -39,7 +40,7 @@
                         }
                     </table>
                 </td>
-                <td>
+                <td valign="top">
                     @* Flash shows updates to a page *@
                     @request.flash.data.map{ case (name, value) =>
                     <div>@name: @value</div>
@@ -62,9 +63,6 @@
                 </td>
             </tr>
             <tr>
-                <td>Current Action: @game.showCurrentAction()</td>
-            </tr>
-            <tr>
                 @* Nested table for player color *@
                 <td><table><tr><td><b>Player Color</b></td></tr>
                     @for(i <- game.getPlayers()) {
@@ -73,9 +71,8 @@
                 </table></td>
                 @* Nested table for listing commands *@
                 <td><table><tr><td><b>Game Commands</b></td></tr>
-                    <tr><td><b>Attact(player name)</b> - Attacks provided player</td></tr>
-                    <tr><td><b>Fortify(something...)</b> - Fortifies something....</td></tr>
-                    <tr><td><b>Test(something......)</b> - Does something.........</td></tr>
+                    <tr><td><b>place(territory, numArmies)</b> - places # of armies in territory</td></tr>
+                    <tr><td><b>next</b> - finished turn and continues to next player</td></tr>
                 </table></td>
             </tr>
             </table>
