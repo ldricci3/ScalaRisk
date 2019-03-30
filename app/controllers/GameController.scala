@@ -42,31 +42,41 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     val formValidationResult: Form[InputText] = form.bindFromRequest
     formValidationResult.fold(errorFunction, successFunction)
   }
-
-  //command(p1, p2, p3)
-  //p1, p2, p3)
+  
   def checkCommand(entireCmd: String): Unit = {
-    var tokens: List[String] = entireCmd.split('(').toList
+    val tokens: List[String] = entireCmd.split('(').toList
     val cmd: String = tokens.head
-    val temp: String = tokens.tail.mkString("")
-    var params: Array[String] = temp.split(", ")
-    val lastElem: String = params(params.length - 1)
-    params(params.length - 1) = lastElem.split("\\)").toList.head
+    val cmdChecks: String = checkCmd(cmd)
 
-    val checks: String = checkCommand(cmd, params)
-    if (checks == "passed") {
-      runCommand(cmd, params)
+    val temp: String = tokens.tail.mkString("")
+    val params: Array[String] = temp.split(", ")
+    if (cmdChecks != "passed") {
+      saveMessage(cmdChecks)
+    } else if (cmd == "next" && entireCmd != "next") {
+      saveMessage("if you're moving onto next turn, only type: next")
+    } else if (cmd != "next" && params.length == 1) {
+      saveMessage("params must be included within () and separated by [comma][space]")
     } else {
-      saveMessage(checks)
+      val lastElem: String = params(params.length - 1)
+      params(params.length - 1) = lastElem.split("\\)").toList.head
+
+      val paramsChecks: String = checkParams(cmd, params)
+      if (cmdChecks == "passed" && paramsChecks == "passed") {
+        runCommand(cmd, params)
+      } else if (cmdChecks != "passed") {
+        saveMessage(cmdChecks)
+      } else if (paramsChecks != "passed") {
+        saveMessage(paramsChecks)
+      }
     }
   }
-  def checkCommand(cmd: String, params: Array[String]): String = {
+  def checkCmd(cmd: String): String = {
     if (invalidCommand(cmd)) {
       s"$cmd is an invalid command."
     } else if (cmd != "place" && game.getCurrentPlayer().armiesOnReserve != 0) {
       "must place all armies before moving on."
     } else {
-      checkParams(cmd, params)
+      "passed"
     }
   }
   private def invalidCommand(str: String): Boolean = str match {
@@ -84,7 +94,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   }
   private def checkPlace(params: Array[String]): String = {
     if (params.length != 2) {
-      s"incorrect number of params. Expected 2. Actual ${params.length}."
+      s"incorrect number of params. Expected 2."
     } else if (!playerOwnsTerritory(params(0))) {
       s"player does not own ${params(0)}"
     } else if (insufficientArmies(params(1).toInt)) {
