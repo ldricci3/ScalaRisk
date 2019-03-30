@@ -17,7 +17,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
   val form: Form[InputText] = Form (
     mapping(
-      "input" -> nonEmptyText,
+      "input" -> nonEmptyText
     )(InputText.apply)(InputText.unapply)
   )
 
@@ -42,7 +42,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     val formValidationResult: Form[InputText] = form.bindFromRequest
     formValidationResult.fold(errorFunction, successFunction)
   }
-  
+
   def checkCommand(entireCmd: String): Unit = {
     val tokens: List[String] = entireCmd.split('(').toList
     val cmd: String = tokens.head
