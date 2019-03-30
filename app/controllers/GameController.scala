@@ -12,6 +12,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
   private val inputTextHistory = ArrayBuffer[InputText]()
   private val postUrl = routes.GameController.submit()
+  private var submissionMessage = ""
   val game: models.Game = new models.Game()
 
   val form: Form[InputText] = Form (
@@ -25,7 +26,6 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     Ok(views.html.game(game, form, postUrl))
   }
 
-  var message: String = ""
   def submit = Action { implicit request: MessagesRequest[AnyContent] =>
     val errorFunction = { formWithErrors: Form[InputText] =>
       // this is the bad case, where the form had validation errors.
@@ -36,10 +36,8 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       // this is the SUCCESS case
       val inputText = InputText(data.input)
       inputTextHistory.append(inputText)
-      println(inputText)
-
       checkCommand(inputText.input)
-      showMessage(message)
+      showMessage(submissionMessage)
     }
     val formValidationResult: Form[InputText] = form.bindFromRequest
     formValidationResult.fold(errorFunction, successFunction)
@@ -59,7 +57,6 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     if (checks == "passed") {
       runCommand(cmd, params)
     } else {
-      println(checks)
       saveMessage(checks)
     }
   }
@@ -144,7 +141,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
     Ok(views.html.game(game, form, postUrl))
   }
-  def saveMessage(m: String): Unit = message = m
+  def saveMessage(m: String): Unit = submissionMessage = m
   def showMessage(message: String): Result = Redirect(
     routes.GameController.show()).flashing("Message" -> message)
 }
