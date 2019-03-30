@@ -12,6 +12,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
   private val inputTextHistory = ArrayBuffer[InputText]()
   private val postUrl = routes.GameController.submit()
+  private var submissionMessage = ""
   val game: models.Game = new models.Game()
 
   val form: Form[InputText] = Form (
@@ -35,10 +36,8 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       // this is the SUCCESS case
       val inputText = InputText(data.input)
       inputTextHistory.append(inputText)
-      println(inputText)
-
       checkCommand(inputText.input)
-      showMessage("Input taken!")
+      showMessage(submissionMessage)
     }
     val formValidationResult: Form[InputText] = form.bindFromRequest
     formValidationResult.fold(errorFunction, successFunction)
@@ -47,7 +46,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   //command(p1, p2, p3)
   //p1, p2, p3)
   def checkCommand(entireCmd: String): Unit = {
-    showMessage("Check Command!")
+    submissionMessage = "Check Command!"
     var tokens: List[String] = entireCmd.split('(').toList
     val cmd: String = tokens.head
     val temp: String = tokens.tail.mkString("")
@@ -59,8 +58,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     if (checks == "passed") {
       runCommand(cmd, params)
     } else {
-      println(checks)
-      showMessage(checks)
+      submissionMessage = checks
     }
   }
   def checkCommand(cmd: String, params: Array[String]): String = {
