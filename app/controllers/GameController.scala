@@ -25,6 +25,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     Ok(views.html.game(game, form, postUrl))
   }
 
+  var message: String = ""
   def submit = Action { implicit request: MessagesRequest[AnyContent] =>
     val errorFunction = { formWithErrors: Form[InputText] =>
       // this is the bad case, where the form had validation errors.
@@ -38,7 +39,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       println(inputText)
 
       checkCommand(inputText.input)
-      showMessage("Input taken!")
+      showMessage(message)
     }
     val formValidationResult: Form[InputText] = form.bindFromRequest
     formValidationResult.fold(errorFunction, successFunction)
@@ -47,7 +48,6 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   //command(p1, p2, p3)
   //p1, p2, p3)
   def checkCommand(entireCmd: String): Unit = {
-    showMessage("Check Command!")
     var tokens: List[String] = entireCmd.split('(').toList
     val cmd: String = tokens.head
     val temp: String = tokens.tail.mkString("")
@@ -60,7 +60,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       runCommand(cmd, params)
     } else {
       println(checks)
-      showMessage(checks)
+      saveMessage(checks)
     }
   }
   def checkCommand(cmd: String, params: Array[String]): String = {
@@ -95,6 +95,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     } else if (negativeNumArmies(params(1).toInt)) {
       s"cannot place negative armies. Actual: ${params(1)}."
     } else {
+      saveMessage(s"successfully placed  ${params(1)} armies in  ${params(0)}")
       "passed"
     }
   }
@@ -126,6 +127,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   def next(): Unit = {
     game.next()
     game.getCurrentPlayer().allocateTurnAllotment()
+    saveMessage(s"successfully moved on to ${game.getCurrentPlayer().name}'s turn.")
   }
 
   // Gets comma-separated string of names and breaks them into a list, then instantiates the game
@@ -142,7 +144,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
     Ok(views.html.game(game, form, postUrl))
   }
-
+  def saveMessage(m: String): Unit = message = m
   def showMessage(message: String): Result = Redirect(
     routes.GameController.show()).flashing("Message" -> message)
 }
