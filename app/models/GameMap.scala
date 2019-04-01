@@ -32,9 +32,8 @@ object GameMap {
     * Get adjacent territories of given territory
     * @return Set of Territory
     */
-  def getAdjacentTerritories(homeTerritory: String): mutable.Set[String] = {
+  def getAdjacentTerritories(homeTerritory: String): mutable.Set[String] =
     adjacencySet(homeTerritory)
-  }
 
   /**
     * Gets the proper map information for the given mapType
@@ -103,6 +102,7 @@ object GameMap {
   }
   private def createTerritory(continent: String, info: String): Unit = {
     val tokens: Array[String] = info.split(" ")
+    tokens(0) = tokens(0).replace('@', ' ')
     territoryMap += (tokens(0) -> new Territory(tokens(0), continent, (tokens(1).toDouble.toInt, tokens(2).toDouble.toInt)))
   }
 
