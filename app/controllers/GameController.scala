@@ -13,11 +13,11 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   private val inputTextHistory = ArrayBuffer[InputText]()
   private val postUrl = routes.GameController.submit()
   private var submissionMessage = ""
-  val game: models.Game = new models.Game()
+  var game: models.Game = new models.Game
 
   val form: Form[InputText] = Form (
     mapping(
-      "input" -> nonEmptyText,
+      "input" -> nonEmptyText
     )(InputText.apply)(InputText.unapply)
   )
 
@@ -42,10 +42,10 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     val formValidationResult: Form[InputText] = form.bindFromRequest
     formValidationResult.fold(errorFunction, successFunction)
   }
-  
+
   def checkCommand(entireCmd: String): Unit = {
     val tokens: List[String] = entireCmd.split('(').toList
-    val cmd: String = tokens.head
+    val cmd: String = tokens.head.toLowerCase()
     val cmdChecks: String = checkCmd(cmd)
 
     val temp: String = tokens.tail.mkString("")
@@ -98,16 +98,23 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     } else if (!playerOwnsTerritory(params(0))) {
       s"player does not own ${params(0)}"
     } else if (insufficientArmies(params(1).toInt)) {
-      s"insufficient armies in reserve. Actual: ${params(1)}."
+      s"insufficient armies in reserve. Input: ${params(1)}. Available: ${game.getCurrentPlayer().armiesOnReserve}"
     } else if (negativeNumArmies(params(1).toInt)) {
-      s"cannot place negative armies. Actual: ${params(1)}."
+      s"cannot place negative armies. Input: ${params(1)}. Available: ${game.getCurrentPlayer().armiesOnReserve}"
     } else {
       saveMessage(s"successfully placed  ${params(1)} armies in  ${params(0)}")
       "passed"
     }
   }
+  private def checkAttack(params: Array[String]): String = {
+    if (params.length != 2) {
+      s"incorrect number of params. Expected 2."
+    } else {
+      "passed"
+    }
+  }
   private def playerOwnsTerritory(name: String): Boolean =
-    game.getCurrentPlayer().territoryNames.contains(name)
+    game.getCurrentPlayer().ownsTerritory(name)
 
   private def insufficientArmies(n: Int): Boolean = n > game.getCurrentPlayer().armiesOnReserve
   private def negativeNumArmies(n: Int): Boolean = n < 0
