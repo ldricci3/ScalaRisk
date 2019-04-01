@@ -26,11 +26,6 @@ class Player(val id: Int,
   var connectedTerritories: mutable.Set[String] = mutable.Set.empty[String]
   var neighbors: mutable.Set[String] = mutable.Set.empty[String]
 
-  /** Assign territories to this player at the start of game. */
-  def assignInitialTerritories(initialTerritories: List[String]): Unit = {
-    territoryNames = initialTerritories
-  }
-
   /**
     * Convert color string to RGB
     * @return tuple of rbg values
