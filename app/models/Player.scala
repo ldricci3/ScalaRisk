@@ -24,6 +24,7 @@ class Player(val id: Int,
   var armiesOnReserve: Int = armies.size
   var visited: mutable.Map[String, Boolean] = mutable.Map.empty[String, Boolean]
   var connectedTerritories: mutable.Set[String] = mutable.Set.empty[String]
+  var neighbors: mutable.Set[String] = mutable.Set.empty[String]
 
   /** Assign territories to this player at the start of game. */
   def assignInitialTerritories(initialTerritories: List[String]): Unit = {
@@ -82,7 +83,22 @@ class Player(val id: Int,
     previousAction = currentAction
   }
 
-  private def isOwnedTerritory(name: String): Boolean = territoryNames.contains(name)
+  def ownsTerritory(name: String): Boolean = territoryNames.contains(name)
+
+  def neighborsWith(name: String): Boolean = neighbors.contains(name)
+
+  def updateNeighbors(): Unit = {
+    territoryNames.foreach(addNeighborsOf(_))
+    neighbors = neighbors.filter(!ownsTerritory(_))
+  }
+
+  def updateNeighbors(name: String): Unit = {
+    GameMap.adjacencySet(name).foreach(addNeighbor(_))
+    neighbors.filter(!ownsTerritory(_))
+  }
+  def addNeighborsOf(name: String): Unit = GameMap.adjacencySet(name).foreach(addNeighbor(_))
+  def addNeighbor(name: String): Unit = neighbors += name
+
 
   /** Let this player attack unoccupied neighboring territories */
   def attack(): Unit = {
