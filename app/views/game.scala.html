@@ -6,7 +6,7 @@
 </head>
 
 @main("Game") {
-    <section id="top">
+    <section id="map">
         <div class="wrapper">
             <div class="gameMap" style="position: relative;">
                 <img src="@routes.Assets.versioned("images/world-domination-game-board-2.1.1.jpg")" style="max-width: 100%; max-height: 100%; ">
@@ -21,69 +21,82 @@
                     </div>
                 }
             </div>
-            @* Table to organize game stats and controls *@
-            <table><tr>
-                <td><b>Game Status</b></td><td><b>Game Controls</b></td>
-            </tr>
-            <tr>
-                <td>
-                    <table>
-                        <tr><td>Current Player: @game.getCurrentPlayer().name (@game.getCurrentPlayer().color) </td></tr>
-                        <tr><td>Armies Not Yet Placed: @game.getCurrentPlayer().armiesOnReserve</td></tr>
-                        <tr><td>Current Action: @game.showCurrentAction()</td></tr>
+        </div>
+    </section>
+    <section id="controls">
+        <div class="container-fluid">
+            <div class="col-sm">
+
+            </div>
+            <div class="col-sm">
+
+            </div>
+            <div class="col-sm">
+
+            </div>
+        </div>
+    </section>
+    @* Table to organize game stats and controls *@
+    <table><tr>
+        <td><b>Game Status</b></td><td><b>Game Controls</b></td>
+    </tr>
+        <tr>
+            <td>
+                <table>
+                    <tr><td>Current Player: @game.getCurrentPlayer().name (@game.getCurrentPlayer().color) </td></tr>
+                    <tr><td>Armies Not Yet Placed: @game.getCurrentPlayer().armiesOnReserve</td></tr>
+                    <tr><td>Current Action: @game.showCurrentAction()</td></tr>
+                    @if(game.getCurrentAction() == 1) {
+                        <tr><td>Player's Territories:</td></tr>
+                        @for(t <- game.getCurrentPlayer().territoryNames) {
+                            <tr><td>@t</td></tr>
+                        }
+                    }
+                    @if(game.getCurrentAction() == 2) {
+                        <tr><td>Neighboring Territories:</td></tr>
                         @if(game.getCurrentAction() == 1) {
-                            <tr><td>Player's Territories:</td></tr>
-                            @for(t <- game.getCurrentPlayer().territoryNames) {
+                            @for(t <- game.getCurrentPlayer().neighbors) {
                                 <tr><td>@t</td></tr>
                             }
                         }
-                        @if(game.getCurrentAction() == 2) {
-                            <tr><td>Neighboring Territories:</td></tr>
-                            @if(game.getCurrentAction() == 1) {
-                                @for(t <- game.getCurrentPlayer().neighbors) {
-                                    <tr><td>@t</td></tr>
-                                }
-                            }
-                        }
+                    }
 
-                    </table>
-                </td>
-                <td valign="top">
-                    @* Flash shows updates to a page *@
-                    @request.flash.data.map{ case (name, value) =>
-                    <div>@name: @value</div>
+                </table>
+            </td>
+            <td valign="top">
+                @* Flash shows updates to a page *@
+                @request.flash.data.map{ case (name, value) =>
+                <div>@name: @value</div>
+                }
+                @* Global errors are not tied to any particular form field *@
+                @if(form.hasGlobalErrors) {
+                    @form.globalErrors.map { error: FormError =>
+                        <div>
+                            Error: @error.key: @error.message
+                        </div>
                     }
-                    @* Global errors are not tied to any particular form field *@
-                    @if(form.hasGlobalErrors) {
-                        @form.globalErrors.map { error: FormError =>
-                            <div>
-                                Error: @error.key: @error.message
-                            </div>
-                        }
-                    }
-                    @helper.form(postUrl) {
-                        @helper.CSRF.formField
+                }
+                @helper.form(postUrl) {
+                    @helper.CSRF.formField
 
-                        @helper.inputText(form("input"))
+                    @helper.inputText(form("input"))
 
-                        <button class="btn btn-outline-dark">Submit</button>
-                    }
-                </td>
-            </tr>
-            <tr>
-                @* Nested table for player color *@
-                <td><table><tr><td><b>Player Color</b></td></tr>
-                    @for(i <- game.getPlayers()) {
-                        <tr><td>@i.name: @i.color</td></tr>
-                    }
-                </table></td>
-                @* Nested table for listing commands *@
-                <td><table><tr><td><b>Game Commands</b></td></tr>
-                    <tr><td><b>place(territory, numArmies)</b> - places # of armies in territory</td></tr>
-                    <tr><td><b>next</b> - finished turn and continues to next player</td></tr>
-                </table></td>
-            </tr>
-            </table>
-        </div>
-    </section>
+                    <button class="btn btn-outline-dark">Submit</button>
+                }
+            </td>
+        </tr>
+        <tr>
+            @* Nested table for player color *@
+            <td><table><tr><td><b>Player Color</b></td></tr>
+                @for(i <- game.getPlayers()) {
+                    <tr><td>@i.name: @i.color</td></tr>
+                }
+            </table></td>
+            @* Nested table for listing commands *@
+            <td><table><tr><td><b>Game Commands</b></td></tr>
+                <tr><td><b>place(territory, numArmies)</b> - places # of armies in territory</td></tr>
+                <tr><td><b>next</b> - finished turn and continues to next player</td></tr>
+            </table></td>
+        </tr>
+    </table>
 }
