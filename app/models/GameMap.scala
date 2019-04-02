@@ -1,4 +1,6 @@
 package models
+import akka.event.Logging.Info
+
 import scala.io.Source
 import scala.collection.mutable
 
@@ -30,9 +32,8 @@ object GameMap {
     * Get adjacent territories of given territory
     * @return Set of Territory
     */
-  def getAdjacentTerritories(homeTerritory: String): mutable.Set[String] = {
+  def getAdjacentTerritories(homeTerritory: String): mutable.Set[String] =
     adjacencySet(homeTerritory)
-  }
 
   /**
     * Gets the proper map information for the given mapType
@@ -56,11 +57,7 @@ object GameMap {
   def setupAdjacentTerritories(): Unit = {
     val lines: Array[String] = adjacencySource.getLines().toArray
     for (line <- lines) {
-      val tokens: Array[String] = line.split(", ")
-      val listTokens: List[String] = tokens.toList
-      val base: String = listTokens.head
-      val neighbors: List[String] = listTokens.tail
-
+      val (base, neighbors) = extractAdjacencyInfo(line)
       for (neighbor <- neighbors) {
         if (adjacencySet.contains(base)) {
           adjacencySet(base) += neighbor
@@ -71,43 +68,42 @@ object GameMap {
       }
     }
   }
+  private def extractAdjacencyInfo(info: String): (String, List[String]) = {
+    val listTokens: List[String] = info.split(", ").toList
+    (listTokens.head, listTokens.tail)
+  }
 
   /**
     * Gets AdjacencySet for given territory
     * @param baseTerritory the territory which we want to get the neighbors of.
     * @return the set of territories adjacent to baseTerritory
     */
-  def getNeighborsByName(baseTerritory: String): mutable.Set[String] = {
-    adjacencySet(baseTerritory)
-  }
+  def getNeighborsByName(baseTerritory: String): mutable.Set[String] = adjacencySet(baseTerritory)
 
   /** Loads continent information from source file. */
   def setupContinentsAndTerritories(): Unit = {
     val lines: Array[String] = continentSource.getLines.toArray
-    for (line <- lines) {
-      val tokens: Array[String] = line.split(", ")
-      val listTokens: List[String] = tokens.toList
-
-      val continentName: String = listTokens.head
-      val withoutName: List[String] = listTokens.tail
-      val bonusArmies: Int = withoutName.head.toInt
-      val territoryNames: List[String] = withoutName.tail
-
-      if (continentMap.contains(continentName)) {
-        println(s"File Content Error: $continentName found in different lines.")
-      } else {
-        continentMap += (continentName ->
-          new Continent(continentName, bonusArmies, territoryNames))
-        for (territoryName: String <- territoryNames) {
-          if (territoryMap.contains(territoryName)) {
-            println(s"File Content Error: $territoryName appears more than once in a single line.")
-          } else {
-            val info: Array[String] = territoryName.split(" ")
-            territoryMap += (info(0) -> new Territory(info(0), continentName, (info(1).toDouble.toInt, info(2).toDouble.toInt)))
-          }
-        }
-      }
-    }
+    lines.foreach(ln => createContinentTerritories(ln))
+  }
+  private def createContinentTerritories(info: String): Unit = {
+    val (continentName, bonusArmies, territoryNames) = extractContinentInfo(info)
+    createContinent(continentName, bonusArmies, territoryNames)
+    createTerritories(continentName, territoryNames)
+  }
+  private def extractContinentInfo(info: String): (String, Int, List[String]) = {
+    val tokens: List[String] = info.split(", ").toList
+    (tokens.head, tokens.tail.head.toInt, tokens.tail.tail)
+  }
+  private def createContinent(name: String, armies: Int, territories: List[String]): Unit = {
+    continentMap += (name -> new Continent(name, armies, territories))
+  }
+  private def createTerritories(continent: String, names: List[String]): Unit = {
+    names.foreach(name => createTerritory(continent, name))
+  }
+  private def createTerritory(continent: String, info: String): Unit = {
+    val tokens: Array[String] = info.split(" ")
+    tokens(0) = tokens(0).replace('@', ' ')
+    territoryMap += (tokens(0) -> new Territory(tokens(0), continent, (tokens(1).toDouble.toInt, tokens(2).toDouble.toInt)))
   }
 
   /**
@@ -115,9 +111,7 @@ object GameMap {
     * @param name name of Territory
     * @return the territory object
     */
-  def getTerritoryByName(name: String): Territory = {
-    territoryMap(name)
-  }
+  def getTerritoryByName(name: String): Territory = territoryMap(name)
 
   /**
     * Getter for a single Territory object

@@ -16,17 +16,15 @@ class Player(val id: Int,
 
   def this(id: Int, name: String, armies: Set[Army]) = this(id, "Colorless", name, armies)
 
+  var currentAction: Int = 1
+  var previousAction: Int = 1
   var territoryNames: List[String] = List()
   var continentNames: List[String] = List()
   val colorRBG: (Int, Int, Int) = createRGB
   var armiesOnReserve: Int = armies.size
   var visited: mutable.Map[String, Boolean] = mutable.Map.empty[String, Boolean]
   var connectedTerritories: mutable.Set[String] = mutable.Set.empty[String]
-
-  /** Assign territories to this player at the start of game. */
-  def assignInitialTerritories(initialTerritories: List[String]): Unit = {
-    territoryNames = initialTerritories
-  }
+  var neighbors: mutable.Set[String] = mutable.Set.empty[String]
 
   /**
     * Convert color string to RGB
@@ -74,15 +72,36 @@ class Player(val id: Int,
 
   /** Let this player deploy armies on occupied territories */
   def placeArmies(territory: String, armies: Int): Unit = {
+    currentAction = 1
     GameMap.territoryMap(territory).addArmies(armies)
     armiesOnReserve -= armies
+    previousAction = currentAction
   }
+
+  def ownsTerritory(name: String): Boolean = territoryNames.contains(name)
+
+  def neighborsWith(name: String): Boolean = neighbors.contains(name)
+
+  def updateNeighbors(): Unit = {
+    territoryNames.foreach(addNeighborsOf(_))
+    neighbors = neighbors.filter(!ownsTerritory(_))
+  }
+
+  def updateNeighbors(name: String): Unit = {
+    GameMap.adjacencySet(name).foreach(addNeighbor(_))
+    neighbors.filter(!ownsTerritory(_))
+  }
+  def addNeighborsOf(name: String): Unit = GameMap.adjacencySet(name).foreach(addNeighbor(_))
+  def addNeighbor(name: String): Unit = neighbors += name
+
 
   /** Let this player attack unoccupied neighboring territories */
   def attack(): Unit = {
+    currentAction = 2
       //if attack is successful
       //check if player has complete ownership of the continent.
       //add continent name to continentNames
+    previousAction = currentAction
   }
 
   /** Fills visited Map values with false */
@@ -109,7 +128,8 @@ class Player(val id: Int,
 
   /** Let this player transfer a certain amount of armies between two occupied and distinct territories. */
   def fortify(): Unit = {
-
+    currentAction = 3
+    previousAction = currentAction
   }
 
   /**
