@@ -29,19 +29,19 @@
             <tr>
                 <td>
                     <table>
-                        <tr><td>Current Player: @game.getCurrentPlayer().name (@game.getCurrentPlayer().color) </td></tr>
-                        <tr><td>Armies Not Yet Placed: @game.getCurrentPlayer().armiesOnReserve</td></tr>
+                        <tr><td>Current Player: @game.getCurrentPlayer.name (@game.getCurrentPlayer.color) </td></tr>
+                        <tr><td>Armies Not Yet Placed: @game.getCurrentPlayer.armiesOnReserve</td></tr>
                         <tr><td>Current Action: @game.showCurrentAction()</td></tr>
-                        @if(game.getCurrentAction() == 1) {
+                        @if(game.getCurrentAction == 1) {
                             <tr><td>Player's Territories:</td></tr>
-                            @for(t <- game.getCurrentPlayer().territoryNames) {
+                            @for(t <- game.getCurrentPlayer.territoryNames) {
                                 <tr><td>@t</td></tr>
                             }
                         }
-                        @if(game.getCurrentAction() == 2) {
+                        @if(game.getCurrentAction == 2) {
                             <tr><td>Neighboring Territories:</td></tr>
-                            @if(game.getCurrentAction() == 1) {
-                                @for(t <- game.getCurrentPlayer().neighbors) {
+                            @if(game.getCurrentAction == 1) {
+                                @for(t <- game.getCurrentPlayer.neighbors) {
                                     <tr><td>@t</td></tr>
                                 }
                             }
