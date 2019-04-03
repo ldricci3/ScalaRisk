@@ -73,7 +73,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   def checkCmd(cmd: String): String = {
     if (invalidCommand(cmd)) {
       s"$cmd is an invalid command."
-    } else if (cmd != "place" && game.getCurrentPlayer().armiesOnReserve != 0) {
+    } else if (cmd != "place" && game.getCurrentPlayer.armiesOnReserve != 0) {
       "must place all armies before moving on."
     } else {
       "passed"
@@ -88,7 +88,8 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   }
   private def checkParams(cmd: String, params: Array[String]): String = cmd match {
     case "place" => checkPlace(params)
-    case "attack" => "fill in later"
+    case "attack" => checkAttack(params)
+    case "defend" => "fill in later"
     case "fortify" => "fill in later"
     case "next" => "passed"
   }
@@ -98,50 +99,68 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     } else if (!playerOwnsTerritory(params(0))) {
       s"player does not own ${params(0)}"
     } else if (insufficientArmies(params(1).toInt)) {
-      s"insufficient armies in reserve. Input: ${params(1)}. Available: ${game.getCurrentPlayer().armiesOnReserve}"
+      s"insufficient armies in reserve. Input: ${params(1)}. Available: ${game.getCurrentPlayer.armiesOnReserve}"
     } else if (negativeNumArmies(params(1).toInt)) {
-      s"cannot place negative armies. Input: ${params(1)}. Available: ${game.getCurrentPlayer().armiesOnReserve}"
+      s"cannot place negative armies. Input: ${params(1)}. Available: ${game.getCurrentPlayer.armiesOnReserve}"
     } else {
       saveMessage(s"successfully placed  ${params(1)} armies in  ${params(0)}")
       "passed"
     }
   }
+
+  /**
+    * attack("myTerritory", "neighbor", numArmiesToSend)
+    */
   private def checkAttack(params: Array[String]): String = {
-    if (params.length != 2) {
-      s"incorrect number of params. Expected 2."
+    if (params.length != 3) {
+      "incorrect number of params. Expected 3. attack(\"myTerritory\", \"neighbor\", numArmiesToSend)"
     } else {
-      "passed"
+      val Array(attackFrom, attackHere, numArmiesToSend) = params
+      if (!playerOwnsTerritory(attackFrom)) {
+        s"player does not own $attackFrom"
+      } else if (!models.GameMap.adjacencySet(attackFrom).contains(attackHere)) {
+        s""
+      } else if (playerOwnsTerritory(attackHere)) {
+        s"player owns $attackHere. cannot attack it."
+      } else if (insufficientArmies(numArmiesToSend.toInt)) {
+        s"insufficient armies in $attackFrom. Input: $numArmiesToSend. Available: ${models.GameMap.territoryMap(attackFrom).numArmies - 1}"
+      } else if (negativeNumArmies(numArmiesToSend.toInt)) {
+        s"cannot attack with negative armies. Input: $numArmiesToSend. Available: ${models.GameMap.territoryMap(attackFrom).numArmies - 1}"
+      } else {
+        saveMessage(s"attacked.")
+        "passed"
+      }
     }
   }
   private def playerOwnsTerritory(name: String): Boolean =
-    game.getCurrentPlayer().ownsTerritory(name)
+    game.getCurrentPlayer.ownsTerritory(name)
 
-  private def insufficientArmies(n: Int): Boolean = n > game.getCurrentPlayer().armiesOnReserve
+  private def insufficientArmies(n: Int): Boolean = n > game.getCurrentPlayer.armiesOnReserve
   private def negativeNumArmies(n: Int): Boolean = n < 0
 
   def runCommand(cmd: String, params: Array[String]): Unit = cmd match {
     case "place" => place(params)
-    case "attack" => game.getCurrentPlayer().attack()
-    case "fortify" => game.getCurrentPlayer().fortify()
+    case "attack" => attack()
+    case "fortify" => fortify()
     case "next" => next()
   }
 
   def place(params: Array[String]): Unit = {
-    game.getCurrentPlayer().placeArmies(params(0), params(1).toInt)
+    game.getCurrentPlayer.placeArmies(params(0), params(1).toInt)
   }
 
   def attack(): Unit = {
-
+    game.getCurrentPlayer.attack()
   }
 
   def fortify(): Unit = {
-
+    game.getCurrentPlayer.fortify()
   }
 
   def next(): Unit = {
     game.next()
-    game.getCurrentPlayer().allocateTurnAllotment()
-    saveMessage(s"successfully moved on to ${game.getCurrentPlayer().name}'s turn.")
+    game.getCurrentPlayer.allocateTurnAllotment()
+    saveMessage(s"successfully moved on to ${game.getCurrentPlayer.name}'s turn.")
   }
 
   // Gets comma-separated string of names and breaks them into a list, then instantiates the game
