@@ -5,51 +5,48 @@
     <link href="stylesheets/gameStyle.css" rel="stylesheet">
 </head>
 
-@main("Game") {
-    <section id="top">
+@main("") {
+    <section id="map">
         <div class="wrapper">
             <div class="gameMap" style="position: relative;">
                 <img src="@routes.Assets.versioned("images/world-domination-game-board-2.1.1.jpg")" style="max-width: 100%; max-height: 100%; ">
                 @for(i <- GameMap.getTerritories) {
-                    <div class="territory" id="@i.name" style="position: absolute; top: @(i.position._1 + "%"); left: @(i.position._2 + "%");
-                            border-radius: 50%; background-color: @("rgb(" + i.getOccupant.createRGB._1 + ", " + i.getOccupant.createRGB._2 + ", " + i.getOccupant.createRGB._3 + ")"); border: 1px solid #666; width: 2%;
-                            text-align: center; font: 40% Arial, sans-serif;">
-                        @*<img src="@routes.Assets.versioned("images/inf.png")" style="position: absolute; height: 4%">*@
-                        @*<div class="numCircle" style="position: relative; border-radius: 50%; width: 10%; height: 25%; padding: 1px; background: #fff; border: 1px solid #666; color: #666; text-align: center; font: 40% Arial, sans-serif;">*@
-                            @*<p>@i.numArmies</p>*@
-                        @*</div>*@
-                        <p>@i.numArmies</p>
+                    <div class="territory" style="position: absolute; top: @(i.position._1 + "%"); left: @(i.position._2 + "%"); max-height: 10%;">
+                        <p style="color: @("rgb(" + i.getOccupant.createRGB._1 + ", " + i.getOccupant.createRGB._2 + ", " + i.getOccupant.createRGB._3 + ")");">@i.numArmies</p>
                     </div>
                 }
             </div>
-            @* Table to organize game stats and controls *@
-            <table><tr>
-                <td><b>Game Status</b></td><td><b>Game Controls</b></td>
-            </tr>
-            <tr>
-                <td>
-                    <table>
-                        <tr><td>Current Player: @game.getCurrentPlayer.name (@game.getCurrentPlayer.color) </td></tr>
-                        <tr><td>Armies Not Yet Placed: @game.getCurrentPlayer.armiesOnReserve</td></tr>
-                        <tr><td>Current Action: @game.showCurrentAction()</td></tr>
-                        @if(game.getCurrentAction == 1) {
-                            <tr><td>Player's Territories:</td></tr>
-                            @for(t <- game.getCurrentPlayer.territoryNames) {
-                                <tr><td>@t</td></tr>
+
+        </div>
+    </section>
+    <section id="controls">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm text-center bg-secondary text-light">
+                    <h1>Game Status</h1>
+                    <h3 style="color:@("rgb(" + game.getCurrentPlayer().createRGB._1 + ", " + game.getCurrentPlayer().createRGB._2 + ", " + game.getCurrentPlayer().createRGB._3 + ")");">Current Player: @game.getCurrentPlayer().name<p>
+                    <h3>Armies Not Yet Placed: @game.getCurrentPlayer().armiesOnReserve</h3>
+                    <h3>Current Action: @game.showCurrentAction()</h3>
+                    <div style="">
+                        @if(game.getCurrentAction() == 1) {
+                            <p>Player's Territories:</p>
+                            @for(t <- game.getCurrentPlayer().territoryNames) {
+                                <p>@t</p>
                             }
                         }
-                        @if(game.getCurrentAction == 2) {
-                            <tr><td>Neighboring Territories:</td></tr>
-                            @if(game.getCurrentAction == 1) {
-                                @for(t <- game.getCurrentPlayer.neighbors) {
-                                    <tr><td>@t</td></tr>
+                        @if(game.getCurrentAction() == 2) {
+                            <p>Neighboring Territories</p>
+                            @if(game.getCurrentAction() == 1) {
+                                @for(t <- game.getCurrentPlayer().neighbors) {
+                                    <p>@t</p>
                                 }
                             }
                         }
+                    </div>
 
-                    </table>
-                </td>
-                <td valign="top">
+                </div>
+                <div class="col-sm text-center bg-light text-dark">
+                    <h1>Game Controls</h1>
                     @* Flash shows updates to a page *@
                     @request.flash.data.map{ case (name, value) =>
                     <div>@name: @value</div>
@@ -65,26 +62,24 @@
                     @helper.form(postUrl) {
                         @helper.CSRF.formField
 
-                        @helper.inputText(form("input"))
+                        @helper.inputText(form("INPUT"))
 
                         <button class="btn btn-outline-dark">Submit</button>
                     }
-                </td>
-            </tr>
-            <tr>
-                @* Nested table for player color *@
-                <td><table><tr><td><b>Player Color</b></td></tr>
+                </div>
+          <div class="col-sm text-center bg-secondary text-light">
+                    <h1>INFO</h1>
                     @for(i <- game.getPlayers()) {
-                        <tr><td>@i.name: @i.color</td></tr>
+                        <p style="color:@("rgb(" + i.createRGB._1 + ", " + i.createRGB._2 + ", " + i.createRGB._3 + ")");">@i.name: @i.color<p>
                     }
-                </table></td>
-                @* Nested table for listing commands *@
-                <td><table><tr><td><b>Game Commands</b></td></tr>
-                    <tr><td><b>place(territory, numArmies)</b> - places # of armies in territory</td></tr>
-                    <tr><td><b>next</b> - finished turn and continues to next player</td></tr>
-                </table></td>
-            </tr>
-            </table>
+
+                    @* Nested table for listing commands *@
+                    <td><table><tr><td><b>Game Commands</b></td></tr>
+                        <tr><td><b>place(territory, numArmies)</b> - places # of armies in territory</td></tr>
+                        <tr><td><b>next</b> - finished turn and continues to next player</td></tr>
+                    </table></td>
+                </p>
+            </p>
         </div>
     </section>
 }

@@ -120,9 +120,9 @@ class Game() {
 
   def next(): Unit = currentTurn = (currentTurn + 1) % players.length
 
-  def getCurrentPlayer: Player = players(currentTurn % players.length)
+  def getCurrentPlayer(): Player = players(currentTurn % players.length)
 
-  def getCurrentAction: Int = getCurrentPlayer.currentAction
+  def getCurrentAction(): Int = getCurrentPlayer.currentAction
 
   def showCurrentAction(): String = getCurrentAction match {
     case 1 => "place armies"
