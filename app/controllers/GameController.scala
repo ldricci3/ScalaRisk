@@ -17,7 +17,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
   val form: Form[InputText] = Form (
     mapping(
-      "input" -> nonEmptyText
+      "INPUT" -> nonEmptyText
     )(InputText.apply)(InputText.unapply)
   )
 
