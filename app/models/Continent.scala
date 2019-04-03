@@ -26,18 +26,6 @@ class Continent(val name: String,
   }
 
   /**
-    * Getter for name
-    * @return name
-    */
-  def getName: String = name
-
-  /**
-    * Getter for army bonus
-    * @return bonusArmyAllotment
-    */
-  def getArmyAllotment: Int = bonusArmyAllotment
-
-  /**
     * Getter for occupancy
     * occupancy = # distinct players occupying
     *     territory within this continent
