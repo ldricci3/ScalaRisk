@@ -103,10 +103,10 @@ class Game() {
     for (c: Continent <- GameMap.getContinents) {
       if (c.getOccupancy() == 1) {
         val aTerritory = c.getTerritoryNames.head
-        val bonus: Int = c.getArmyAllotment
+        val bonus: Int = c.bonusArmyAllotment
 
-        GameMap.territoryMap(aTerritory).getOccupant.allocateMoreArmies(bonus)
-        continentControllers += GameMap.territoryMap(aTerritory).getOccupant
+        GameMap.territoryMap(aTerritory).occupant.allocateMoreArmies(bonus)
+        continentControllers += GameMap.territoryMap(aTerritory).occupant
 
         if (continentControllers.size > 1) {
           inProgress = true

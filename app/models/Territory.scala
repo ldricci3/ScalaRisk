@@ -20,20 +20,6 @@ class Territory(val name: String,
     this(name, continent, 1, position)
 
   /**
-    * Setter for occupant
-    * @param newOccupant new occupant
-    */
-  def setOccupant(newOccupant: Player): Unit = {
-    this.occupant = newOccupant
-  }
-
-  /**
-    * Getter for occupant
-    * @return occupant
-    */
-  def getOccupant: Player = occupant
-
-  /**
     * Checks if aPlayer is the occupant
     * @param aPlayer test on this player
     * @return whether or not aPlayer is the occupant
