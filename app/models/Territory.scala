@@ -28,8 +28,14 @@ class Territory(val name: String,
     aPlayer.equals(this.occupant)
   }
 
-  /** Place more armies on this territory. */
+  /** put more armies on this territory. */
   def addArmies(n: Int): Unit = {
     numArmies = numArmies + n
+  }
+
+  /** take more armies on this territory. */
+  def minusArmies(n: Int): Unit = {
+    assert(n <= numArmies, s"insufficient armies in territory. cannot take $n. only up to ${numArmies - 1}")
+    numArmies = numArmies - n
   }
 }

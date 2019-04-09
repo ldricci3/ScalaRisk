@@ -24,22 +24,35 @@
             <div class="row">
                 <div class="col-sm text-center bg-secondary text-light">
                     <h1>Game Status</h1>
+
+                    @if(game.state == models.Roll) {
+                        <h3>Attacker Rolls</h3>
+                        @for(t <- BattleInfo.attackRolls) {
+                            <p>@t</p>
+                        }
+                        <h3>Defender Rolls</h3>
+                        @for(t <- BattleInfo.defendRolls) {
+                            <p>@t</p>
+                        }
+                    }
+                    @if(game.state == models.Defend) {
+                        <h3 style="color:@("rgb(" + game.getCurrentPlayer().createRGB._1 + ", " + game.getCurrentPlayer().createRGB._2 + ", " + game.getCurrentPlayer().createRGB._3 + ")");">Current Player: (models.GameMap.territoryMap(@game.attacker.attackTo).occupant).name<p>
+                    } else {
                     <h3 style="color:@("rgb(" + game.getCurrentPlayer().createRGB._1 + ", " + game.getCurrentPlayer().createRGB._2 + ", " + game.getCurrentPlayer().createRGB._3 + ")");">Current Player: @game.getCurrentPlayer().name<p>
+                    }
                     <h3>Armies Not Yet Placed: @game.getCurrentPlayer().armiesOnReserve</h3>
                     <h3>Current Action: @game.showCurrentAction()</h3>
                     <div style="">
-                        @if(game.getCurrentAction() == 1) {
+                        @if(game.state == models.Place) {
                             <p>Player's Territories:</p>
                             @for(t <- game.getCurrentPlayer().territoryNames) {
                                 <p>@t</p>
                             }
                         }
-                        @if(game.getCurrentAction() == 2) {
+                        @if(game.state == models.Place) {
                             <p>Neighboring Territories</p>
-                            @if(game.getCurrentAction() == 1) {
-                                @for(t <- game.getCurrentPlayer().neighbors) {
-                                    <p>@t</p>
-                                }
+                            @for(t <- game.getCurrentPlayer().neighbors) {
+                                <p>@t</p>
                             }
                         }
                     </div>
