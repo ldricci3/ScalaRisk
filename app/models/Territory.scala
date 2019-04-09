@@ -38,4 +38,6 @@ class Territory(val name: String,
     assert(n <= numArmies, s"insufficient armies in territory. cannot take $n. only up to ${numArmies - 1}")
     numArmies = numArmies - n
   }
+
+  def setOccupant(player: Player): Unit = occupant = player
 }
