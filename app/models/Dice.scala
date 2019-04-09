@@ -18,5 +18,5 @@ object Dice {
     */
   def roll(repeat: Int): IndexedSeq[Int] = (for (i <- 0 until repeat) yield {
     random.nextInt(6) + 1
-  }).sorted
+  }).sorted.reverse
 }
