@@ -1,12 +1,27 @@
 package models
 
-import scala.collection.mutable
-import scala.io.Source
-
 class Game() {
   var currentTurn: Int = 0
   var players: List[Player] = List.empty
   var isStarted: Boolean = false
+  var attacker: Attacker = Attacker(-1, "","", -1)
+  var attackRolls: List[Int] = List.empty[Int]
+  var defendRolls: List[Int] = List.empty[Int]
+
+
+  var state: GameState = Place
+  def nextState(): Unit = {
+    state = state match {
+      case Place => Attack
+      case Attack => Fortify
+      case Defend => Roll
+      case Roll => Attack
+      case Fortify => Place
+    }
+    if (state == Place) {
+      nextTurn()
+    }
+  }
 
   /** Loads map, continent, territory data. */
   def setupGame(names:  List[String], colors: List[String]): Unit = {
@@ -35,6 +50,7 @@ class Game() {
     isStarted = true
 
     getCurrentPlayer.allocateTurnAllotment()
+
   }
 
   /**R6: Players have their armies assigned to territories*/
@@ -118,16 +134,25 @@ class Game() {
     inProgress
   }
 
-  def next(): Unit = currentTurn = (currentTurn + 1) % players.length
+  def nextTurn(): Unit = {
+    currentTurn = (currentTurn + 1) % players.length
+    allocateArmies()
+  }
 
-  def getCurrentPlayer(): Player = players(currentTurn % players.length)
+  def getCurrentPlayer(): Player = players(getCurrentIndex())
 
-  def getCurrentAction(): Int = getCurrentPlayer.currentAction
+  def getCurrentIndex(): Int = currentTurn % players.length
 
-  def showCurrentAction(): String = getCurrentAction match {
-    case 1 => "place armies"
-    case 2 => "attack enemy territories"
-    case 3 => "fortify your territories"
+  def getCurrentAction(): Int = getCurrentPlayer().currentAction
+
+  def allocateArmies(): Unit = getCurrentPlayer().allocateTurnAllotment()
+
+  def showCurrentAction(): String = state match {
+    case Place => "place armies"
+    case Attack => "attack enemy territories"
+    case Defend => s"DEFEND: ${players(attacker.playerIndex).name} is attacking your ${attacker.attackTo} with ${attacker.numAttackers} armies."
+    case Roll => "Battling!"
+    case Fortify => "fortify your territories"
   }
 
   def getPlayers(): List[Player] = players

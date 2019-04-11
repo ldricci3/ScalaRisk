@@ -6,6 +6,8 @@ import play.api.data._
 import play.api.data.Forms._
 import scala.collection.mutable.ArrayBuffer
 
+import models.GameState
+
 case class InputText (input: String)
 
 class GameController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc) {
@@ -36,17 +38,17 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       // this is the SUCCESS case
       val inputText = InputText(data.input)
       inputTextHistory.append(inputText)
-      checkCommand(inputText.input)
+      tryCommand(inputText.input)
       showMessage(submissionMessage)
     }
     val formValidationResult: Form[InputText] = form.bindFromRequest
     formValidationResult.fold(errorFunction, successFunction)
   }
 
-  def checkCommand(entireCmd: String): Unit = {
+  def tryCommand(entireCmd: String): Unit = {
     val tokens: List[String] = entireCmd.split('(').toList
     val cmd: String = tokens.head.toLowerCase()
-    val cmdChecks: String = checkCmd(cmd)
+    val cmdChecks: String = checkCommand(cmd)
 
     val temp: String = tokens.tail.mkString("")
     val params: Array[String] = temp.split(", ")
@@ -54,7 +56,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       saveMessage(cmdChecks)
     } else if (cmd == "next" && entireCmd != "next") {
       saveMessage("if you're moving onto next turn, only type: next")
-    } else if (cmd != "next" && params.length == 1) {
+    } else if (cmd != "defend" && cmd != "next" && params.length == 1) {
       saveMessage("params must be included within () and separated by [comma][space]")
     } else {
       val lastElem: String = params(params.length - 1)
@@ -62,7 +64,9 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
       val paramsChecks: String = checkParams(cmd, params)
       if (cmdChecks == "passed" && paramsChecks == "passed") {
+        println(s"running command $cmd")
         runCommand(cmd, params)
+        println(s"finished command $cmd")
       } else if (cmdChecks != "passed") {
         saveMessage(cmdChecks)
       } else if (paramsChecks != "passed") {
@@ -70,18 +74,70 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       }
     }
   }
-  def checkCmd(cmd: String): String = {
+  def allowedCommands(): Set[String] = game.state match {
+    case models.Place => Set("next", "place")
+    case models.Attack => Set("next", "attack")
+    case models.Defend => Set("next", "defend")
+    case models.Fortify => Set("next", "fortify")
+    case models.Roll => Set("next")
+  }
+  def isAllowedCommand(cmd: String): (Boolean, Set[String]) = (allowedCommands().contains(cmd), allowedCommands())
+  def checkCommand(cmd: String): String = {
+    var ret: String = "passed"
     if (invalidCommand(cmd)) {
-      s"$cmd is an invalid command."
-    } else if (cmd != "place" && game.getCurrentPlayer.armiesOnReserve != 0) {
-      "must place all armies before moving on."
+      ret = s"$cmd is an invalid command."
     } else {
-      "passed"
+      val (isAllowed, supportedCommands) = isAllowedCommand(cmd)
+      if (!isAllowed) {
+        ret = s"$cmd is not allowed for current action. Allowed commands: " + supportedCommands.mkString("[", ", ", "]")
+      } else {
+        //TODO check conditions specific to state
+        ret = game.state match {
+          case models.Place => checkCommandPlace(cmd)
+          case models.Attack => checkCommandAttack(cmd)
+          case models.Defend => checkCommandDefend(cmd)
+          case models.Fortify => checkCommandFortify(cmd)
+          case _ => "passed"
+        }
+      }
     }
+    ret
+  }
+  private def checkCommandPlace(cmd: String): String =  {
+    var ret = "passed"
+    if (cmd == "next" && game.getCurrentPlayer().armiesOnReserve != 0) {
+      ret = s"cannot move on to next action until all remaining ${game.getCurrentPlayer().armiesOnReserve} armies are placed."
+    }
+    ret
+  }
+  private def checkCommandAttack(cmd: String): String = {
+    var ret = "passed"
+    //TODO
+    if (cmd == "next") {
+      ""
+    }
+    ret
+  }
+  private def checkCommandDefend(cmd: String): String = {
+    var ret = "passed"
+    //TODO
+    if (cmd == "next") {
+      ""
+    }
+    ret
+  }
+  private def checkCommandFortify(cmd: String): String = {
+    var ret = "passed"
+    //TODO final milestone.
+    if (cmd == "next") {
+      ""
+    }
+    ret
   }
   private def invalidCommand(str: String): Boolean = str match {
     case "place" => false
     case "attack" => false
+    case "defend" => false
     case "fortify" => false
     case "next" => false
     case _ => true
@@ -89,7 +145,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   private def checkParams(cmd: String, params: Array[String]): String = cmd match {
     case "place" => checkPlace(params)
     case "attack" => checkAttack(params)
-    case "defend" => "fill in later"
+    case "defend" => checkDefend(params)
     case "fortify" => "fill in later"
     case "next" => "passed"
   }
@@ -98,59 +154,107 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       s"incorrect number of params. Expected 2."
     } else if (!playerOwnsTerritory(params(0))) {
       s"player does not own ${params(0)}"
-    } else if (insufficientArmies(params(1).toInt)) {
-      s"insufficient armies in reserve. Input: ${params(1)}. Available: ${game.getCurrentPlayer.armiesOnReserve}"
+    } else if (insufficientArmiesPlace(params(1).toInt)) {
+      s"insufficient armies in reserve. Input: ${params(1)}. Available: ${game.getCurrentPlayer().armiesOnReserve}"
     } else if (negativeNumArmies(params(1).toInt)) {
-      s"cannot place negative armies. Input: ${params(1)}. Available: ${game.getCurrentPlayer.armiesOnReserve}"
+      s"cannot place negative armies. Input: ${params(1)}. Available: ${game.getCurrentPlayer().armiesOnReserve}"
     } else {
       saveMessage(s"successfully placed  ${params(1)} armies in  ${params(0)}")
       "passed"
     }
   }
 
-  /**
-    * attack("myTerritory", "neighbor", numArmiesToSend)
-    */
   private def checkAttack(params: Array[String]): String = {
+    println("begin attack param checks")
+    var ret: String = "passed"
     if (params.length != 3) {
-      "incorrect number of params. Expected 3. attack(\"myTerritory\", \"neighbor\", numArmiesToSend)"
+      ret = "incorrect number of params. Expected 3. attack(\"neighbor\", \"myTerritory\", numArmiesToSend)"
     } else {
-      val Array(attackFrom, attackHere, numArmiesToSend) = params
-      if (!playerOwnsTerritory(attackFrom)) {
-        s"player does not own $attackFrom"
+      val Array(attackHere, attackFrom, numArmiesToSend) = params
+      println(numArmiesToSend.toInt)
+      println(exceedsThreeDice(numArmiesToSend.toInt))
+      ret = if (!playerOwnsTerritory(attackFrom)) {
+        s"${game.getCurrentPlayer()} does not own $attackFrom"
       } else if (!models.GameMap.adjacencySet(attackFrom).contains(attackHere)) {
-        s""
+        s"$attackFrom and $attackHere are not neighboring territories"
       } else if (playerOwnsTerritory(attackHere)) {
-        s"player owns $attackHere. cannot attack it."
-      } else if (insufficientArmies(numArmiesToSend.toInt)) {
+        s"${game.getCurrentPlayer()} owns $attackHere. cannot attack it."
+      } else if (insufficientArmiesAttack(numArmiesToSend.toInt, attackFrom)) {
         s"insufficient armies in $attackFrom. Input: $numArmiesToSend. Available: ${models.GameMap.territoryMap(attackFrom).numArmies - 1}"
-      } else if (negativeNumArmies(numArmiesToSend.toInt)) {
+      } else if (exceedsThreeDice(numArmiesToSend.toInt)) {
+        s"cannot roll more than 3 dice."
+      }else if (negativeNumArmies(numArmiesToSend.toInt)) {
         s"cannot attack with negative armies. Input: $numArmiesToSend. Available: ${models.GameMap.territoryMap(attackFrom).numArmies - 1}"
+      } else if (notOneTwoThree(numArmiesToSend.toInt)) {
+        s"at the moment, c" +
+          s"an only send 1, 2, or 3 armies. we will add support for > 3 armies later."
       } else {
-        saveMessage(s"attacked.")
+        println("attack command checks passed")
         "passed"
       }
     }
+    println("finish attack param checks")
+    ret
+  }
+  private def exceedsThreeDice(n: Int): Boolean = n > 3
+  private def checkDefend(params: Array[String]): String = {
+    var ret: String = "passed"
+    var numDefenders: Int = params(0).toInt
+    if (params.length != 1) {
+      ret = "incorrect number of params. Expected 1. defend(numDefendersofTerritory)"
+    } else {
+      val models.Attacker(attackerIndex, attackHere, attackFrom, numArmiesToSend) = game.attacker
+      if (negativeNumArmies(numDefenders)) {
+        ret = s"cannot defend with negative armies. Input: $numDefenders. Available: ${models.GameMap.territoryMap(game.attacker.attackTo).numArmies}"
+      } else if (insufficientArmiesDefend(numDefenders, game.attacker.attackTo)) {
+        s"insufficient armies in $attackHere. Input: $numDefenders. Available: ${models.GameMap.territoryMap(attackHere).numArmies}"
+      }
+    }
+    ret
+  }
+  private def notOneTwoThree(n: Int): Boolean = n match {
+    case 1 => false
+    case 2 => false
+    case 3 => false
+    case _ => true
   }
   private def playerOwnsTerritory(name: String): Boolean =
-    game.getCurrentPlayer.ownsTerritory(name)
+    game.getCurrentPlayer().ownsTerritory(name)
 
-  private def insufficientArmies(n: Int): Boolean = n > game.getCurrentPlayer.armiesOnReserve
+  private def insufficientArmiesPlace(n: Int): Boolean = n > game.getCurrentPlayer().armiesOnReserve
+  private def insufficientArmiesAttack(n: Int, attackFrom: String): Boolean = n >= models.GameMap.territoryMap(attackFrom).numArmies
+  private def insufficientArmiesDefend(n: Int, defendHere: String): Boolean = n > models.GameMap.territoryMap(defendHere).numArmies
+  private def insufficientArmiesFortify(n: Int): Boolean = n > game.getCurrentPlayer().armiesOnReserve
+
   private def negativeNumArmies(n: Int): Boolean = n < 0
 
   def runCommand(cmd: String, params: Array[String]): Unit = cmd match {
     case "place" => place(params)
-    case "attack" => attack()
+    case "attack" => prepareAttack(params)
+    case "defend" => battle(params)
     case "fortify" => fortify()
     case "next" => next()
   }
 
   def place(params: Array[String]): Unit = {
-    game.getCurrentPlayer.placeArmies(params(0), params(1).toInt)
+    game.getCurrentPlayer().placeArmies(params(0), params(1).toInt)
   }
 
-  def attack(): Unit = {
-    game.getCurrentPlayer.attack()
+  def prepareAttack(params: Array[String]): Unit = {
+    game.attacker = models.Attacker(game.getCurrentIndex(), params(0), params(1), params(2).toInt)
+    println("attack prepared.")
+    game.state = models.Defend
+  }
+
+  def battle(params: Array[String]): Unit = {
+    val numDefenders: Int = params(0).toInt
+    game.getCurrentPlayer().attack(
+      game.attacker.attackTo,
+      game.attacker.attackFrom,
+      game.attacker.numAttackers,
+      numDefenders
+    )
+    next()
   }
 
   def fortify(): Unit = {
@@ -158,10 +262,19 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   }
 
   def next(): Unit = {
-    game.next()
-    game.getCurrentPlayer.allocateTurnAllotment()
-    saveMessage(s"successfully moved on to ${game.getCurrentPlayer.name}'s turn.")
+    game.nextState()
+    saveMessage(s"Allowed commands: " + allowedCommands().mkString("[", ", ", "]"))
   }
+  /*def nextAction(): Unit = {
+    //game.nextAction()
+    saveMessage(s"successfully moved on to action: ${game.showCurrentAction()}.")
+  }
+  def nextTurn(): Unit = {
+    //game.nextAction()
+    //game.nextTurn()
+    game.getCurrentPlayer().allocateTurnAllotment()
+    saveMessage(s"successfully moved on to ${game.getCurrentPlayer().name}'s turn.")
+  }*/
 
   // Gets comma-separated string of names and breaks them into a list, then instantiates the game
   def startGame(playerNames: String) = Action { implicit request: MessagesRequest[AnyContent] =>
@@ -175,6 +288,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
     showMessage("");
   }
+  
   def saveMessage(m: String): Unit = submissionMessage = m
   def showMessage(message: String): Result = Redirect(
     routes.GameController.show()).flashing("Message" -> message)

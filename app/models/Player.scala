@@ -96,12 +96,44 @@ class Player(val id: Int,
 
 
   /** Let this player attack unoccupied neighboring territories */
-  def attack(): Unit = {
+  def attack(to: String, from: String, numAttackers: Int, numDefenders: Int): Unit = {//(List[Int], List[Int]) = {
+    println("Inside attack.")
     currentAction = 2
-      //if attack is successful
-      //check if player has complete ownership of the continent.
-      //add continent name to continentNames
+    val aTerr = GameMap.getTerritoryByName(from)
+    val dTerr = GameMap.getTerritoryByName(to)
+
+    val attackRolls = Dice.roll(numAttackers)
+    val defendRolls = Dice.roll(numDefenders)
+    println("dice rolled.")
+    val minLength = Integer.min(attackRolls.length, defendRolls.length)
+    for (i <- 0 until minLength) {
+      if (attackRolls(i) > defendRolls(i)) {
+        dTerr.addArmies(-1)
+      } else {
+        aTerr.addArmies(-1)
+      }
+    }
+    println("battles over.")
+    if (dTerr.numArmies == 0) {
+      // could I replace aTerr.getOccupant with this?
+      // we will see soon.
+      dTerr.setOccupant(this)
+      moveArmies(to, from, numAttackers)
+    }
     previousAction = currentAction
+    println("last line inside attack.")
+    //(attackRolls.toList, defendRolls.toList)
+    BattleInfo.attackRolls = attackRolls.toList
+    BattleInfo.defendRolls = defendRolls.toList
+  }
+
+  /** Allows player to move armies from one territory to another */
+  def moveArmies(to: String, from: String, num: Int): Unit = {
+    val frum = GameMap.getTerritoryByName(from)
+    val two = GameMap.getTerritoryByName(to)
+
+    frum.minusArmies(num)
+    two.addArmies(num)
   }
 
   /** Fills visited Map values with false */
