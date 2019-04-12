@@ -34,7 +34,7 @@
                             <p class="text-dark" style="opacity: 1;">Attacking Player: @(models.GameMap.territoryMap(game.attacker.attackFrom).occupant.name)</p>
                         </div>
                         <div style="opacity: .5; background-color:@("rgb(" + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._1 + ", " + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._2 + ", " + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._3 + ")"); ">
-                            <p class="text-dark" style="opacity: 1;">Attacking Player: @(models.GameMap.territoryMap(game.attacker.attackTo).occupant.name)</p>
+                            <p class="text-dark" style="opacity: 1;">Defending Player: @(models.GameMap.territoryMap(game.attacker.attackTo).occupant.name)</p>
                         </div>
                     } else {
                         <div style="opacity: .5; background-color:@("rgb(" + game.getCurrentPlayer().createRGB._1 + ", " + game.getCurrentPlayer().createRGB._2 + ", " + game.getCurrentPlayer().createRGB._3 + ")"); ">
