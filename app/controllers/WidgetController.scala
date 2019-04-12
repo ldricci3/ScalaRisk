@@ -29,12 +29,12 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
   // of the "WidgetController" references are inside the .scala file.
   private val postUrl = routes.WidgetController.createWidget()
 
-  def index = Action {
+  def index: Action[AnyContent] = Action {
     Ok(views.html.index())
   }
 
   // Corresponds to reset button to clear the player list.
-  def reset = Action {
+  def reset: Action[AnyContent] = Action {
     if (playerCount == 0) {
       Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Cannot reset empty list")
     } else {
@@ -47,7 +47,7 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
 
   // Corresponds to start game button to begin the game. Checks for min player amount and if satisfied creates a comma-
   // separated string of the player names to pass to the game controller.
-  def start = Action {
+  def start: Action[AnyContent] = Action {
     if (playerCount < 3) {
       Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Must have at least 3 players")
     } else {
@@ -55,13 +55,13 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
     }
   }
 
-  def listWidgets = Action { implicit request: MessagesRequest[AnyContent] =>
+  def listWidgets: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     // Pass an unpopulated form to the template
     Ok(views.html.listWidgets(widgets, form, postUrl))
   }
 
   // This will be the action that handles our form post
-  def createWidget = Action { implicit request: MessagesRequest[AnyContent] =>
+  def createWidget: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     val errorFunction = { formWithErrors: Form[Data] =>
       // This is the bad case, where the form had validation errors.
       // Let's show the user the form again, with the errors highlighted.

@@ -97,14 +97,12 @@ class Player(val id: Int,
 
   /** Let this player attack unoccupied neighboring territories */
   def attack(to: String, from: String, numAttackers: Int, numDefenders: Int): Unit = {//(List[Int], List[Int]) = {
-    println("Inside attack.")
     currentAction = 2
     val aTerr = GameMap.getTerritoryByName(from)
     val dTerr = GameMap.getTerritoryByName(to)
 
     val attackRolls = Dice.roll(numAttackers)
     val defendRolls = Dice.roll(numDefenders)
-    println("dice rolled.")
     val minLength = Integer.min(attackRolls.length, defendRolls.length)
     for (i <- 0 until minLength) {
       if (attackRolls(i) > defendRolls(i)) {
@@ -113,7 +111,6 @@ class Player(val id: Int,
         aTerr.addArmies(-1)
       }
     }
-    println("battles over.")
     if (dTerr.numArmies == 0) {
       // could I replace aTerr.getOccupant with this?
       // we will see soon.
@@ -121,7 +118,6 @@ class Player(val id: Int,
       moveArmies(to, from, numAttackers)
     }
     previousAction = currentAction
-    println("last line inside attack.")
     //(attackRolls.toList, defendRolls.toList)
     BattleInfo.attackRolls = attackRolls.toList
     BattleInfo.defendRolls = defendRolls.toList
