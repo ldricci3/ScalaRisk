@@ -284,17 +284,17 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
   // Gets comma-separated string of names and breaks them into a list, then instantiates the game
   def startGame(playerNames: String): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
-    if (!game.isStarted) {
-      val playerArray = playerNames.split(",")
-      val playerList = playerArray.toList
+    val playerArray = playerNames.split(",")
+    val playerList = playerArray.toList
 
-      /*val c = models.GameMap.getClass.getDeclaredConstructor()
-      c.setAccessible(true)
-      c.newInstance()*/
-      game.setupGame(playerList, List("Red", "White", "Yellow", "Green", "Blue", "Orange"))
-    }
-    Ok(views.html.game(game, form, postUrl))
+    val c = models.GameMap.getClass.getDeclaredConstructor()
+    c.setAccessible(true)
+    c.newInstance()
+    game.setupGame(playerList, List("Red", "White", "Yellow", "Green", "Blue", "Orange"))
+
+    showMessage("");
   }
+  
   def saveMessage(m: String): Unit = submissionMessage = m
   def showMessage(message: String): Result = Redirect(
     routes.GameController.show()).flashing("Message" -> message)
