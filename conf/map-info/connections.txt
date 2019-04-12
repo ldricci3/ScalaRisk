@@ -33,10 +33,10 @@ Greenland, Northwest Territory, Ontario, Quebec, Iceland
 Alberta, Alaska, Northwest Territory, Ontario, Western United States
 Ontario, Northwest Territory, Quebec, Greenland, Eastern United States, Western United States, Alberta
 Quebec, Greenland, Ontario, Eastern United States
-Western United States, Eastern United States, Ontario, Alberta, Central America
-Eastern United States, Western United States, Ontario, Quebec, Central America
-Central America, Western United States, Eastern United States, Venezuela
-Venezuela, Central America, Brazil, Peru
+Western United States, Eastern United States, Ontario, Alberta, Mexico
+Eastern United States, Western United States, Ontario, Quebec, Mexico
+Mexico, Western United States, Eastern United States, Venezuela
+Venezuela, Mexico, Brazil, Peru
 Brazil, Venezuela, Peru, Argentina, North Africa
 Peru, Venezuela, Argentina
 Argentina, Peru, Brazil
