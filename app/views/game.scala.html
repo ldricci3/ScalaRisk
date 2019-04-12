@@ -125,18 +125,18 @@
                         @* Nested table for listing commands *@
                         <p>Game Commands:</p>
                         <p><b>attack(toTerritory, fromTerritory, numArmies)</b> - attack territory with max of 3 armies</p>
-                        <p><b>next</b> - finishes turn and continues to next player</p>
+                        <p><b>next</b> - finishes current action and continues to next action. If currently on final action, next command will proceed to the next turn.</p>
                     } else if (game.state == models.Place) {
                         @* Nested table for listing commands *@
                         <p>Game Commands:</p>
                         <p><b>place(territory, numArmies)</b> - places # of armies in territory</p>
-                        <p><b>next</b> - finishes turn and continues to next player</p>
+                        <p><b>next</b> - finishes current action and continues to next action. If currently on final action, next command will proceed to the next turn.</p>
                     } else if (game.state == models.Defend) {
                         <p>Game Commands:</p>
                         <p><b>defend(numArmies)</b> - defends attack with # of armies</p>
                     } else if (game.state == models.Roll) {
                         <p>Game Commands:</p>
-                        <p><b>next</b> - finishes turn and continues to next player</p>
+                        <p><b>next</b> - finishes current action and continues to next action. If currently on final action, next command will proceed to the next turn.</p>
                     }
                 </div>
             </div>
