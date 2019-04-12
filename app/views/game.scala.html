@@ -24,26 +24,46 @@
             <div class="row">
                 <div class="col-sm text-center bg-secondary text-light">
                     <h1>Game Status</h1>
+                    <h3>Current Action: @game.showCurrentAction()</h3>
+                    @if(game.state == models.Defend) {
+                        <div style="opacity: .5; background-color:@("rgb(" + game.getCurrentPlayer().createRGB._1 + ", " + game.getCurrentPlayer().createRGB._2 + ", " + game.getCurrentPlayer().createRGB._3 + ")"); ">
+                            <p class="text-dark" style="opacity: 1;">Current Player: @(models.GameMap.territoryMap(game.attacker.attackTo).occupant.name)</p>
+                        </div>
+                    } else if (game.state == models.Roll){
+                        <div style="opacity: .5; background-color:@("rgb(" + models.GameMap.territoryMap(game.attacker.attackFrom).occupant.createRGB._1 + ", " + models.GameMap.territoryMap(game.attacker.attackFrom).occupant.createRGB._2 + ", " + models.GameMap.territoryMap(game.attacker.attackFrom).occupant.createRGB._3 + ")"); ">
+                            <p class="text-dark" style="opacity: 1;">Attacking Player: @(models.GameMap.territoryMap(game.attacker.attackFrom).occupant.name)</p>
+                        </div>
+                        <div style="opacity: .5; background-color:@("rgb(" + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._1 + ", " + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._2 + ", " + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._3 + ")"); ">
+                            <p class="text-dark" style="opacity: 1;">Attacking Player: @(models.GameMap.territoryMap(game.attacker.attackTo).occupant.name)</p>
+                        </div>
+                    } else {
+                        <div style="opacity: .5; background-color:@("rgb(" + game.getCurrentPlayer().createRGB._1 + ", " + game.getCurrentPlayer().createRGB._2 + ", " + game.getCurrentPlayer().createRGB._3 + ")"); ">
+                            <p class="text-dark" style="opacity: 1;">Current Player: @(game.getCurrentPlayer().name)</p>
+                        </div>
+                    }
 
                     @if(game.state == models.Roll) {
-                        <h3>Attacker Rolls</h3>
-                        @for(t <- BattleInfo.attackRolls) {
-                            <p>@t</p>
-                        }
-                        <h3>Defender Rolls</h3>
-                        @for(t <- BattleInfo.defendRolls) {
-                            <p>@t</p>
-                        }
+                        <div class="row">
+                            <div class="col-sm text-center bg-secondary text-light">
+                                <h3>Attacker Rolls</h3>
+                                @for(t <- BattleInfo.attackRolls) {
+                                    <img src="@routes.Assets.versioned("images/dice/" + t + ".png")" style="max-width: 33%; max-height: 33%;">
+                                }
+                            </div>
+                            <div class="col-sm text-center bg-secondary text-light">
+                                <h3>Defender Rolls</h3>
+                                @for(t <- BattleInfo.defendRolls) {
+                                    <img src="@routes.Assets.versioned("images/dice/" + t + ".png")" style="max-width: 33%; max-height: 33%;">
+                                }
+                            </div>
+                        </div>
                     }
-                    @if(game.state == models.Defend) {
-                        <h3 style="color:@("rgb(" + game.getCurrentPlayer().createRGB._1 + ", " + game.getCurrentPlayer().createRGB._2 + ", " + game.getCurrentPlayer().createRGB._3 + ")");">Current Player: (models.GameMap.territoryMap(@game.attacker.attackTo).occupant).name<p>
-                    } else {
-                    <h3 style="color:@("rgb(" + game.getCurrentPlayer().createRGB._1 + ", " + game.getCurrentPlayer().createRGB._2 + ", " + game.getCurrentPlayer().createRGB._3 + ")");">Current Player: @game.getCurrentPlayer().name<p>
+
+                    @if(game.state == models.Place) {
+                        <h3>Armies Not Yet Placed: @game.getCurrentPlayer().armiesOnReserve</h3>
                     }
-                    <h3>Armies Not Yet Placed: @game.getCurrentPlayer().armiesOnReserve</h3>
-                    <h3>Current Action: @game.showCurrentAction()</h3>
-                    <div style="">
-                        @if(game.state == models.Place) {
+                    <div>
+                        @if(game.state == models.Place || game.state == models.Attack) {
                             <p>Player's Territories:</p>
                             <td >
                                 <div style="width:100%; max-height:300px; overflow:auto">
@@ -53,7 +73,7 @@
                                 </div>
                             </td>
                         }
-                        @if(game.state == models.Place) {
+                        @if(game.state == models.Attack) {
                             <p>&nbsp</p>
                             <p>Neighboring Territories:</p>
                             <td >
@@ -65,6 +85,7 @@
                             </td>
                             <p>&nbsp</p>
                         }
+
                     </div>
 
                 </div>
@@ -94,13 +115,30 @@
                     <h1>Info</h1>
                     <p>Player Color Key:</p>
                     @for(i <- game.getPlayers()) {
-                        <p style="color:@("rgb(" + i.createRGB._1 + ", " + i.createRGB._2 + ", " + i.createRGB._3 + ")");">@i.name: @i.color<p>
+                        <div style="opacity: .5; background-color:@("rgb(" + i.createRGB._1 + ", " + i.createRGB._2 + ", " + i.createRGB._3 + ")"); ">
+                            <p class="text-dark" style="opacity: 1;">@(i.name)</p>
+                        </div>
+                        @*<p style="color:@("rgb(" + i.createRGB._1 + ", " + i.createRGB._2 + ", " + i.createRGB._3 + ")");">@i.name: @i.color<p>*@
                     }
 
-                    @* Nested table for listing commands *@
-                    <p>Game Commands:</p>
-                    <p><b>place(territory, numArmies)</b> - places # of armies in territory</p>
-                    <p><b>next</b> - finishes turn and continues to next player</p>
+                    @if(game.state == models.Attack) {
+                        @* Nested table for listing commands *@
+                        <p>Game Commands:</p>
+                        <p><b>attack(toTerritory, fromTerritory, numArmies)</b> - attack territory with max of 3 armies</p>
+                        <p><b>next</b> - finishes turn and continues to next player</p>
+                    } else if (game.state == models.Place) {
+                        @* Nested table for listing commands *@
+                        <p>Game Commands:</p>
+                        <p><b>place(territory, numArmies)</b> - places # of armies in territory</p>
+                        <p><b>next</b> - finishes turn and continues to next player</p>
+                    } else if (game.state == models.Defend) {
+                        <p>Game Commands:</p>
+                        <p><b>defend(numArmies)</b> - defends attack with # of armies</p>
+                    } else if (game.state == models.Roll) {
+                        <p>Game Commands:</p>
+                        <p><b>next</b> - finishes turn and continues to next player</p>
+                    }
+
                 </div>
             </div>
         </div>
