@@ -23,12 +23,12 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     )(InputText.apply)(InputText.unapply)
   )
 
-  def show = Action { implicit request: MessagesRequest[AnyContent] =>
+  def show: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     // pass an unpopulated form to the template
     Ok(views.html.game(game, form, postUrl))
   }
 
-  def submit = Action { implicit request: MessagesRequest[AnyContent] =>
+  def submit: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     val errorFunction = { formWithErrors: Form[InputText] =>
       // this is the bad case, where the form had validation errors.
       BadRequest(views.html.game(game, formWithErrors, postUrl))
@@ -41,6 +41,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       tryCommand(inputText.input)
       showMessage(submissionMessage)
     }
+
     val formValidationResult: Form[InputText] = form.bindFromRequest
     formValidationResult.fold(errorFunction, successFunction)
   }
@@ -64,9 +65,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
       val paramsChecks: String = checkParams(cmd, params)
       if (cmdChecks == "passed" && paramsChecks == "passed") {
-        println(s"running command $cmd")
         runCommand(cmd, params)
-        println(s"finished command $cmd")
       } else if (cmdChecks != "passed") {
         saveMessage(cmdChecks)
       } else if (paramsChecks != "passed") {
@@ -74,6 +73,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       }
     }
   }
+
   def allowedCommands(): Set[String] = game.state match {
     case models.Place => Set("next", "place")
     case models.Attack => Set("next", "attack")
@@ -81,7 +81,9 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     case models.Fortify => Set("next", "fortify")
     case models.Roll => Set("next")
   }
+
   def isAllowedCommand(cmd: String): (Boolean, Set[String]) = (allowedCommands().contains(cmd), allowedCommands())
+
   def checkCommand(cmd: String): String = {
     var ret: String = "passed"
     if (invalidCommand(cmd)) {
@@ -103,6 +105,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     }
     ret
   }
+
   private def checkCommandPlace(cmd: String): String =  {
     var ret = "passed"
     if (cmd == "next" && game.getCurrentPlayer().armiesOnReserve != 0) {
@@ -110,6 +113,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     }
     ret
   }
+
   private def checkCommandAttack(cmd: String): String = {
     var ret = "passed"
     //TODO
@@ -118,6 +122,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     }
     ret
   }
+
   private def checkCommandDefend(cmd: String): String = {
     var ret = "passed"
     //TODO
@@ -126,6 +131,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     }
     ret
   }
+
   private def checkCommandFortify(cmd: String): String = {
     var ret = "passed"
     //TODO final milestone.
@@ -134,6 +140,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     }
     ret
   }
+
   private def invalidCommand(str: String): Boolean = str match {
     case "place" => false
     case "attack" => false
@@ -142,6 +149,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     case "next" => false
     case _ => true
   }
+
   private def checkParams(cmd: String, params: Array[String]): String = cmd match {
     case "place" => checkPlace(params)
     case "attack" => checkAttack(params)
@@ -149,6 +157,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     case "fortify" => "fill in later"
     case "next" => "passed"
   }
+
   private def checkPlace(params: Array[String]): String = {
     if (params.length != 2) {
       s"incorrect number of params. Expected 2."
@@ -165,14 +174,11 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   }
 
   private def checkAttack(params: Array[String]): String = {
-    println("begin attack param checks")
     var ret: String = "passed"
     if (params.length != 3) {
       ret = "incorrect number of params. Expected 3. attack(\"neighbor\", \"myTerritory\", numArmiesToSend)"
     } else {
       val Array(attackHere, attackFrom, numArmiesToSend) = params
-      println(numArmiesToSend.toInt)
-      println(exceedsThreeDice(numArmiesToSend.toInt))
       ret = if (!playerOwnsTerritory(attackFrom)) {
         s"${game.getCurrentPlayer()} does not own $attackFrom"
       } else if (!models.GameMap.adjacencySet(attackFrom).contains(attackHere)) {
@@ -189,14 +195,14 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
         s"at the moment, c" +
           s"an only send 1, 2, or 3 armies. we will add support for > 3 armies later."
       } else {
-        println("attack command checks passed")
         "passed"
       }
     }
-    println("finish attack param checks")
     ret
   }
+
   private def exceedsThreeDice(n: Int): Boolean = n > 3
+
   private def checkDefend(params: Array[String]): String = {
     var ret: String = "passed"
     var numDefenders: Int = params(0).toInt
@@ -212,6 +218,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     }
     ret
   }
+
   private def notOneTwoThree(n: Int): Boolean = n match {
     case 1 => false
     case 2 => false
@@ -242,7 +249,6 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
   def prepareAttack(params: Array[String]): Unit = {
     game.attacker = models.Attacker(game.getCurrentIndex(), params(0), params(1), params(2).toInt)
-    println("attack prepared.")
     game.state = models.Defend
   }
 
@@ -277,7 +283,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   }*/
 
   // Gets comma-separated string of names and breaks them into a list, then instantiates the game
-  def startGame(playerNames: String) = Action { implicit request: MessagesRequest[AnyContent] =>
+  def startGame(playerNames: String): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     val playerArray = playerNames.split(",")
     val playerList = playerArray.toList
 
