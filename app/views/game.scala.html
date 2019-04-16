@@ -3,6 +3,16 @@
 <head>
     <title>Game</title>
     <link href="stylesheets/gameStyle.css" rel="stylesheet">
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script>
+            setInterval( function() {
+                $("#map").load("/show #map");
+                $("#status").load("/show #status");
+                $("#info").load("/show #info");
+            }, 5000);
+    </script>
+
 </head>
 
 @main("") {
@@ -22,7 +32,7 @@
     <section id="controls">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm text-center bg-secondary text-light">
+                <div class="col-sm text-center bg-secondary text-light" id="status">
                     <h1>Game Status</h1>
                     <h3>Current Action: @game.showCurrentAction()</h3>
                     @if(game.state == models.Defend) {
@@ -111,7 +121,7 @@
                         <button class="btn btn-outline-dark">Submit</button>
                     }
                 </div>
-                <div class="col-sm text-center bg-secondary text-light">
+                <div class="col-sm text-center bg-secondary text-light" id="info">
                     <h1>Info</h1>
                     <p>Player Color Key:</p>
                     @for(i <- game.getPlayers()) {
