@@ -29,6 +29,17 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     Ok(views.html.game(game, form, postUrl))
   }
 
+  def showMobile: Action[AnyContent] = Action {implicit request: MessagesRequest[AnyContent] =>
+    // show map portion only for mobile app
+    Ok(views.html.mobile(game))
+  }
+
+  def submitMobile(gameCommand: String): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+    var cleaned_command = gameCommand.replaceAll("_", " ")
+    tryCommand(cleaned_command)
+    Ok(views.html.mobile(game))
+  }
+
   def submit: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     val errorFunction = { formWithErrors: Form[InputText] =>
       // this is the bad case, where the form had validation errors.
@@ -77,7 +88,6 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       saveMessage(paramsChecks)
     }
   }
-
 
   def runCommand(cmd: String, params: Array[String]): Unit = {
     cmd match {
