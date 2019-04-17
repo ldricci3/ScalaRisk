@@ -18,4 +18,5 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /startGame/:playerNames     controllers.GameController.startGame(playerNames)
 GET     /show                       controllers.GameController.show
 GET     /mobile                     controllers.GameController.showMobile
+GET     /mobile/:gameCommand        controllers.GameController.submitMobile(gameCommand)
 POST    /submit                     controllers.GameController.submit
