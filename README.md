@@ -1,4 +1,8 @@
-## How to run
+## Documentation & Design
+
+[Google Doc Link](https://docs.google.com/document/d/1yY7frHaYDF8IoTSd7z3gOMtoapwcGe-EOquH1Yg8KB8/edit?usp=sharing)
+
+## How to run locally
 
 Start Risk:
 
@@ -8,9 +12,18 @@ sbt run
 
 And open [http://localhost:9000/](http://localhost:9000/)
 
-Documentation:
-https://docs.google.com/document/d/1yY7frHaYDF8IoTSd7z3gOMtoapwcGe-EOquH1Yg8KB8/edit?usp=sharing
+## How to open server to internet (multi-player & mobile app)
+
+First start Risk locally, then start ssh from a separate terminal/command prompt instance:
+
+```bash
+ssh -R scala-risk.serveo.net:80:localhost:9000 scala-risk@serveo.net
+```
+
+And open [https://scala-risk.serveo.net](https://scala-risk.serveo.net)
+
+While running: press g to open GUI, q to quit GUI, and Ctrl + C to close connection
 
 ## Credits
 Play Framework - Forms Skeleton:
-Originally written by Chris Birchall and the Guardian Team: <https://github.com/cb372/play-forms-tutorial>.  Much thanks, especially for the [article](https://www.theguardian.com/info/developer-blog/2015/dec/30/how-to-add-a-form-to-a-play-application).
+Originally written by Chris Birchall and the Guardian Team: <https://github.com/cb372/play-forms-tutorial>.
