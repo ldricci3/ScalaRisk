@@ -29,6 +29,11 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     Ok(views.html.game(game, form, postUrl))
   }
 
+  def showMobile: Action[AnyContent] = Action {implicit request: MessagesRequest[AnyContent] =>
+    // show map portion only for mobile app
+    Ok(views.html.mobile(game))
+  }
+
   def submit: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     val errorFunction = { formWithErrors: Form[InputText] =>
       // this is the bad case, where the form had validation errors.
