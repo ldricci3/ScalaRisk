@@ -115,6 +115,7 @@ class Player(val id: Int,
       // could I replace aTerr.getOccupant with this?
       // we will see soon.
       dTerr.setOccupant(this)
+      this.territoryNames = to :: this.territoryNames
       moveArmies(to, from, numAttackers)
     }
     previousAction = currentAction
@@ -155,9 +156,9 @@ class Player(val id: Int,
   }
 
   /** Let this player transfer a certain amount of armies between two occupied and distinct territories. */
-  def fortify(): Unit = {
-    currentAction = 3
-    previousAction = currentAction
+  def fortify(to: String, from: String, numArmies: Int): Unit = {
+    GameMap.territoryMap(to).addArmies(numArmies)
+    GameMap.territoryMap(from).minusArmies(numArmies)
   }
 
   /**
