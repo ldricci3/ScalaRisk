@@ -43,20 +43,9 @@ case class CommandChecker() {
     ret
   }
 
-  def checkCommandAttack(cmd: String): String = {
-    var ret = "passed"
-    ret
-  }
-
-  def checkCommandDefend(cmd: String): String = {
-    var ret = "passed"
-    ret
-  }
-
-  def checkCommandFortify(cmd: String): String = {
-    var ret = "passed"
-    ret
-  }
+  def checkCommandAttack(cmd: String): String = "passed"
+  def checkCommandDefend(cmd: String): String = "passed"
+  def checkCommandFortify(cmd: String): String = "passed"
 
   def invalidCommand(str: String): Boolean = str match {
     case "place" => false
@@ -71,7 +60,7 @@ case class CommandChecker() {
     case "place" => checkPlace(params, game)
     case "attack" => checkAttack(params, game)
     case "defend" => checkDefend(params, game)
-    case "fortify" => "fill in later"
+    case "fortify" => checkFortify(params, game)
     case "next" => "passed"
   }
 
@@ -108,7 +97,7 @@ case class CommandChecker() {
         s"cannot roll more than 3 dice."
       }else if (negativeNumArmies(numArmiesToSend.toInt)) {
         s"cannot attack with negative armies. Input: $numArmiesToSend. Available: ${models.GameMap.territoryMap(attackFrom).numArmies - 1}"
-      } else if (notOneTwoThree(numArmiesToSend.toInt)) {
+      } else if (exceedsThreeArmies(numArmiesToSend.toInt) || belowOneArmy(numArmiesToSend.toInt)) {
         s"at the moment, c" +
           s"an only send 1, 2, or 3 armies. we will add support for > 3 armies later."
       } else {
@@ -119,13 +108,45 @@ case class CommandChecker() {
     ret
   }
 
+  var fortifyCalls: Int = 0
+  var fortifiedTerritory: String = ""
+  private def checkFortify(params: Array[String], game: models.Game): String = {
+    if (fortifyCalls == 1) {
+      s"cannot fortify a second time. player has already fortified $fortifiedTerritory."
+    } else if (params.length != 3) {
+      "incorrect number of params. Expected 3. fortify(\"moveToThisTerritory\", \"moveFromThisTerritory\", numArmiesToSend)"
+    } else {
+      val Array(moveTo, moveFrom, numArmies) = params
+      val numArmiesInt = numArmies.toInt
+      if (!playerOwnsTerritory(moveTo, game)) {
+        s"player does not own $moveTo. Cannot move $numArmies armies to $moveTo."
+      } else if (!playerOwnsTerritory(moveFrom, game)) {
+        s"player does not own $moveFrom. Cannot move $numArmies armies from $moveFrom."
+      } else if (moveTo == moveFrom) {
+        s"territories cannot be the same."
+      } else if (!models.GameMap.adjacencySet(moveFrom).contains(moveTo)) {
+        s"$moveFrom and $moveTo are not neighboring territories"
+      } else if (negativeNumArmies(numArmiesInt)) {
+        val availableArmies = models.GameMap.territoryMap(moveFrom).numArmies - 1
+        s"cannot fortify with negative armies. Input: $numArmies. Available: $availableArmies."
+      } else if (numArmiesInt > models.GameMap.territoryMap(moveFrom).numArmies - 1) {
+        s"insufficient armies in $moveFrom. Input: $numArmiesInt. Available: ${models.GameMap.territoryMap(moveFrom).numArmies - 1}"
+      } else {
+        fortifyCalls += 1
+        fortifiedTerritory = moveTo
+        saveMessage(s"successfully fortified $moveTo using $numArmies armies from $moveFrom.")
+        s"passed"
+      }
+    }
+  }
+
   private def exceedsThreeDice(n: Int): Boolean = n > 3
 
   private def exceedsTwoDice(n: Int): Boolean = n > 2
 
   private def checkDefend(params: Array[String], game: models.Game): String = {
     var ret: String = "passed"
-    var numDefenders: Int = params(0).toInt
+    val numDefenders: Int = params(0).toInt
     if (params.length != 1) {
       ret = "incorrect number of params. Expected 1. defend(numDefendersofTerritory)"
     } else {
@@ -143,12 +164,8 @@ case class CommandChecker() {
     ret
   }
 
-  private def notOneTwoThree(n: Int): Boolean = n match {
-    case 1 => false
-    case 2 => false
-    case 3 => false
-    case _ => true
-  }
+  private def exceedsThreeArmies(n: Int): Boolean = n > 3
+  private def belowOneArmy(n: Int): Boolean = n < 1
   private def playerOwnsTerritory(name: String, game: models.Game): Boolean =
     game.getCurrentPlayer().ownsTerritory(name)
 
