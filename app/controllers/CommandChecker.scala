@@ -9,6 +9,7 @@ case class CommandChecker() {
     case models.Defend => Set("next", "defend")
     case models.Fortify => Set("next", "fortify")
     case models.Roll => Set("next")
+    case models.End => Set()
   }
 
   def isAllowedCommand(cmd: String, game: models.Game): (Boolean, Set[String]) = (allowedCommands(game).contains(cmd), allowedCommands(game))
@@ -75,6 +76,7 @@ case class CommandChecker() {
       s"cannot place negative armies. Input: ${params(1)}. Available: ${game.getCurrentPlayer().armiesOnReserve}"
     } else {
       saveMessage(s"successfully placed  ${params(1)} armies in  ${params(0)}")
+      fortifyCalls = 0
       "passed"
     }
   }
@@ -90,7 +92,7 @@ case class CommandChecker() {
       } else if (!models.GameMap.adjacencySet(attackFrom).contains(attackHere)) {
         s"$attackFrom and $attackHere are not neighboring territories"
       } else if (playerOwnsTerritory(attackHere, game)) {
-        s"${game.getCurrentPlayer()} owns $attackHere. cannot attack it."
+        s"${game.getCurrentPlayer().name} owns $attackHere. cannot attack it."
       } else if (insufficientArmiesAttack(numArmiesToSend.toInt, attackFrom)) {
         s"insufficient armies in $attackFrom. Input: $numArmiesToSend. Available: ${models.GameMap.territoryMap(attackFrom).numArmies - 1}"
       } else if (exceedsThreeDice(numArmiesToSend.toInt)) {
