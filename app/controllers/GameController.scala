@@ -110,13 +110,17 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
   def battle(params: Array[String]): Unit = {
     val numDefenders: Int = params(0).toInt
-    game.getCurrentPlayer().attack(
+    val attackerWins = game.getCurrentPlayer().attack(
       game.attacker.attackTo,
       game.attacker.attackFrom,
       game.attacker.numAttackers,
       numDefenders
     )
-    next()
+    if (attackerWins && !game.gameInProgress) {
+      game.end()
+    } else {
+      next()
+    }
   }
 
   def fortify(params: Array[String]): Unit = {

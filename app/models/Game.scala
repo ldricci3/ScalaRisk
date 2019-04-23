@@ -17,6 +17,7 @@ class Game() {
       case Defend => Roll
       case Roll => Attack
       case Fortify => Place
+      case End => End
     }
     if (state == Place) {
       nextTurn()
@@ -105,30 +106,17 @@ class Game() {
     assert(checkTotal == realTotal)
   }
 
-  /**
-    * Checks if all continents are controlled by a single player
-    * Also grants continent army bonus
-    * @return whether game is still in progress
-    */
   def gameInProgress: Boolean = {
-    var inProgress: Boolean = false
-    var continentControllers: Set[Player] = Set.empty[Player]
-    for (c: Continent <- GameMap.getContinents) {
-      if (c.getOccupancy() == 1) {
-        val aTerritory = c.getTerritoryNames.head
-        val bonus: Int = c.bonusArmyAllotment
-
-        GameMap.territoryMap(aTerritory).occupant.allocateMoreArmies(bonus)
-        continentControllers += GameMap.territoryMap(aTerritory).occupant
-
-        if (continentControllers.size > 1) {
-          inProgress = true
-        }
-      } else {
-        inProgress = true
+    for (player <- players) {
+      if (player.getNumTerritories() == GameMap.territoryMap.size) {
+        false
       }
     }
-    inProgress
+    true
+  }
+
+  def end(): Unit = {
+    state = End
   }
 
   def nextTurn(): Unit = {
@@ -150,6 +138,7 @@ class Game() {
     case Defend => s"DEFEND: ${players(attacker.playerIndex).name} is attacking your ${attacker.attackTo} with ${attacker.numAttackers} armies."
     case Roll => "Battling!"
     case Fortify => "fortify your territories"
+    case End => "game over"
   }
 
   def getPlayers(): List[Player] = players
