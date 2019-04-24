@@ -96,7 +96,7 @@ class Player(val id: Int,
 
 
   /** Let this player attack unoccupied neighboring territories */
-  def attack(to: String, from: String, numAttackers: Int, numDefenders: Int): Unit = {//(List[Int], List[Int]) = {
+  def attack(to: String, from: String, numAttackers: Int, numDefenders: Int): Boolean = {//(List[Int], List[Int]) = {
     currentAction = 2
     val aTerr = GameMap.getTerritoryByName(from)
     val dTerr = GameMap.getTerritoryByName(to)
@@ -111,16 +111,22 @@ class Player(val id: Int,
         aTerr.addArmies(-1)
       }
     }
+    var attackerWins = false
     if (dTerr.numArmies == 0) {
       // could I replace aTerr.getOccupant with this?
       // we will see soon.
+      dTerr.occupant.territoryNames = dTerr.occupant.territoryNames.filter(x => x != to)
       dTerr.setOccupant(this)
+      this.territoryNames = to :: this.territoryNames
+
       moveArmies(to, from, numAttackers)
+      attackerWins = true
     }
     previousAction = currentAction
     //(attackRolls.toList, defendRolls.toList)
     BattleInfo.attackRolls = attackRolls.toList
     BattleInfo.defendRolls = defendRolls.toList
+    attackerWins
   }
 
   /** Allows player to move armies from one territory to another */
@@ -155,9 +161,9 @@ class Player(val id: Int,
   }
 
   /** Let this player transfer a certain amount of armies between two occupied and distinct territories. */
-  def fortify(): Unit = {
-    currentAction = 3
-    previousAction = currentAction
+  def fortify(to: String, from: String, numArmies: Int): Unit = {
+    GameMap.territoryMap(to).addArmies(numArmies)
+    GameMap.territoryMap(from).minusArmies(numArmies)
   }
 
   /**

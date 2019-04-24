@@ -8,3 +8,4 @@ case object Attack extends GameState { val state = "ATTACK" }
 case object Roll extends GameState { val state = "ROLL" }
 case object Defend extends GameState { val state = "DEFEND" }
 case object Fortify extends GameState { val state = "FORTIFY" }
+case object End extends GameState { val state = "END" }

@@ -94,7 +94,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       case "place" => place(params)
       case "attack" => prepareAttack(params)
       case "defend" => battle(params)
-      case "fortify" => fortify()
+      case "fortify" => fortify(params)
       case "next" => next()
     }
   }
@@ -110,17 +110,21 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
   def battle(params: Array[String]): Unit = {
     val numDefenders: Int = params(0).toInt
-    game.getCurrentPlayer().attack(
+    val attackerWins = game.getCurrentPlayer().attack(
       game.attacker.attackTo,
       game.attacker.attackFrom,
       game.attacker.numAttackers,
       numDefenders
     )
-    next()
+    if (attackerWins && !game.gameInProgress) {
+      game.end()
+    } else {
+      next()
+    }
   }
 
-  def fortify(): Unit = {
-    game.getCurrentPlayer().fortify()
+  def fortify(params: Array[String]): Unit = {
+    game.getCurrentPlayer().fortify(params(0), params(1), params(2).toInt)
   }
 
   def next(): Unit = {
