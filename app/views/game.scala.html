@@ -6,6 +6,11 @@
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script>
+            $(document).ready(function () {
+                $("#map").load("/show #map");
+                $("#status").load("/show #status");
+                $("#info").load("/show #info");
+            });
             setInterval( function() {
                 $("#map").load("/show #map");
                 $("#status").load("/show #status");
