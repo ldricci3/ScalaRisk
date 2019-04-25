@@ -6,6 +6,11 @@
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script>
+            $(document).ready(function () {
+                $("#map").load("/show #map");
+                $("#status").load("/show #status");
+                $("#info").load("/show #info");
+            });
             setInterval( function() {
                 $("#map").load("/show #map");
                 $("#status").load("/show #status");
@@ -51,7 +56,6 @@
                             <p class="text-dark" style="opacity: 1;">Current Player: @(game.getCurrentPlayer().name)</p>
                         </div>
                     }
-
                     @if(game.state == models.Roll) {
                         <div class="row">
                             <div class="col-sm text-center bg-secondary text-light">
@@ -68,7 +72,6 @@
                             </div>
                         </div>
                     }
-
                     @if(game.state == models.Place) {
                         <h3>Armies Not Yet Placed: @game.getCurrentPlayer().armiesOnReserve</h3>
                     }
@@ -82,9 +85,9 @@
                                     }
                                 </div>
                             </td>
+                            <p>&nbsp</p>
                         }
                         @if(game.state == models.Attack) {
-                            <p>&nbsp</p>
                             <p>Neighboring Territories:</p>
                             <td >
                                 <div style="width:100%; max-height:300px; overflow:auto">
@@ -95,9 +98,7 @@
                             </td>
                             <p>&nbsp</p>
                         }
-
                     </div>
-
                 </div>
                 <div class="col-sm text-center bg-light text-dark">
                     <h1>Game Controls</h1>

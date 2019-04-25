@@ -5,6 +5,8 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import scala.collection.mutable.ArrayBuffer
+import play.api.libs.json._
+import scala.collection.mutable.ListBuffer
 
 import models.GameState
 
@@ -38,6 +40,47 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     var cleaned_command = gameCommand.replaceAll("_", " ")
     tryCommand(cleaned_command)
     Ok(views.html.mobile(game))
+  }
+
+  def json: Action[AnyContent] = Action {
+    val jsonValue: JsValue = JsObject(Seq(
+      "Current Player" -> JsString(jsonGameStats()(0)),
+      "Current Action" -> JsString(jsonGameStats()(1)),
+      "Player Territories" -> JsArray(jsonPlayerTerritories()),
+      "Attacking Dice" -> JsString(jsonGameStats()(2)),
+      "Defending Dice" -> JsString(jsonGameStats()(3))))
+    Ok(jsonValue)
+  }
+
+  def jsonGameStats(): Array[String] = {
+    var currentPlayer = ""
+    var attackingDice = ""
+    var defendingDice = ""
+    if (game.state == models.Defend) {
+      currentPlayer = models.GameMap.territoryMap(game.attacker.attackTo).occupant.name
+    } else if (game.state == models.Roll){
+      currentPlayer = models.GameMap.territoryMap(game.attacker.attackTo).occupant.name
+      for (die <- game.attackRolls) {
+        attackingDice += die.toString + ","
+      }
+      attackingDice.dropRight(1)
+      for (die <- game.defendRolls) {
+        defendingDice += die.toString + ","
+      }
+      defendingDice.dropRight(1)
+    } else {
+      currentPlayer = game.getCurrentPlayer().name
+    }
+    Array(currentPlayer, game.showCurrentAction(), attackingDice, defendingDice)
+  }
+
+  def jsonPlayerTerritories(): Array[JsValue] = {
+    val territories = game.getCurrentPlayer().territoryNames
+    val jsvalueList = new ListBuffer[JsValue]()
+    for (territory <- territories) {
+      jsvalueList += JsString(territory)
+    }
+    jsvalueList.toArray
   }
 
   def submit: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
