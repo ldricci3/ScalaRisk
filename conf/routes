@@ -19,4 +19,5 @@ GET     /startGame/:playerNames     controllers.GameController.startGame(playerN
 GET     /show                       controllers.GameController.show
 GET     /mobile                     controllers.GameController.showMobile
 GET     /mobile/:gameCommand        controllers.GameController.submitMobile(gameCommand)
+GET     /json                       controllers.GameController.json
 POST    /submit                     controllers.GameController.submit
