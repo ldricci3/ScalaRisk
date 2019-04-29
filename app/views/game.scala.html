@@ -76,7 +76,7 @@
                         <h3>Armies Not Yet Placed: @game.getCurrentPlayer().armiesOnReserve</h3>
                     }
                     <div>
-                        @if(game.state == models.Place || game.state == models.Attack) {
+                        @if(game.state == models.Place || game.state == models.Attack || game.state == models.Fortify) {
                             <p>Player's Territories:</p>
                             <td >
                                 <div style="width:100%; max-height:300px; overflow:auto">
@@ -147,6 +147,10 @@
                         <p><b>defend(numArmies)</b> - defends attack with # of armies</p>
                     } else if (game.state == models.Roll) {
                         <p>Game Commands:</p>
+                        <p><b>next</b> - finishes current action and continues to next action. If currently on final action, next command will proceed to the next turn.</p>
+                    } else if (game.state == models.Fortify) {
+                        <p>Game Commands:</p>
+                        <p><b>fortify(toTerritory, fromTerritory, numArmies)</b> - moves # of armies from one territory to another. Territories must be connected</p>
                         <p><b>next</b> - finishes current action and continues to next action. If currently on final action, next command will proceed to the next turn.</p>
                     }
                 </div>
