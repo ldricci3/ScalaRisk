@@ -1,28 +1,32 @@
 @(widgets: Seq[Widget], form: Form[WidgetForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
 
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+        setInterval( function() {
+            $("#playerList").load("/widgets #playerList");
+        }, 2000);
+</script>
+
   @main("") {
 
   <h1>Players</h1>
   <p><b>Please create 3 to 6 players by entering their name.</b></p>
+  <p><b>Local Game:</b></p>
   <p>Press <b>Start Game</b> to start the game. Press <b>Reset</b> to reset the player list.</p>
+  <p><b>Multi-Client Game:</b></p>
+  <p>Wait for all players to enter the lobby. One player will press <b>Start Game</b>, everyone else will press <b>Join Game</b></p>
 
     @* Flash shows updates to a page *@
     @request.flash.data.map{ name =>
       <div>@name:</div>
     }
 
-    <table>
-      <thead>
-        <tr><th>Player List</th>
-      </thead>
-      <tbody>
-      @for(w <- widgets) {
-        <tr><td>@w.name</td></tr>
-      }
-      </tbody>
-    </table>
-
-    <hr/>
+    <div id="playerList">
+        <h3>Player List</h3>
+        @for(w <- widgets) {
+            <p style="color:black">@w.name</p>
+        }
+    </div>
 
     @* Global errors are not tied to any particular form field *@
     @if(form.hasGlobalErrors) {
@@ -46,14 +50,18 @@
   <div class="container">
     <div class="col">
       <form action="@controllers.routes.WidgetController.start">
-        <input class="form-control" type="submit" value="Start Game" />
+          <input class="form-control" type="submit" value="Start Game" />
+      </form>
+    </div>
+    <div class="col">
+      <form action="@controllers.routes.WidgetController.join">
+          <input class="form-control" type="submit" value="Join Game" />
       </form>
     </div>
     <div class="col">
       <form action="@controllers.routes.WidgetController.reset">
         <input class="form-control" type="submit" value="Reset" />
       </form>
-      <p>&nbsp</p>
     </div>
   </div>
 }
