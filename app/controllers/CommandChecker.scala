@@ -126,7 +126,7 @@ case class CommandChecker() {
         s"player does not own $moveFrom. Cannot move $numArmies armies from $moveFrom."
       } else if (moveTo == moveFrom) {
         s"territories cannot be the same."
-      } else if (!models.GameMap.adjacencySet(moveFrom).contains(moveTo)) {
+      } else if (connected(moveTo, moveFrom, game)) {
         s"$moveFrom and $moveTo are not neighboring territories"
       } else if (negativeNumArmies(numArmiesInt)) {
         val availableArmies = models.GameMap.territoryMap(moveFrom).numArmies - 1
@@ -140,6 +140,11 @@ case class CommandChecker() {
         s"passed"
       }
     }
+  }
+  private def connected(to: String, from: String, game: models.Game): Boolean = {
+    game.getCurrentPlayer().resetVisited()
+    game.getCurrentPlayer().dfs(to)
+    game.getCurrentPlayer().connectedTerritories.contains(from)
   }
 
   private def exceedsThreeDice(n: Int): Boolean = n > 3
