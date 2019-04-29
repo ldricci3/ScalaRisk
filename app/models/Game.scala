@@ -50,8 +50,26 @@ class Game() {
     randomTerritoryAssignment()
     isStarted = true
 
-    getCurrentPlayer.allocateTurnAllotment()
+    getCurrentPlayer().allocateTurnAllotment()
 
+    //for checking end game
+    //testEndGame()
+  }
+
+  def testEndGame(): Unit = {
+
+  }
+  def assignTerritory(terries: scala.collection.Set[String], receiver: Player): scala.collection.Set[String] = {
+    var unoccupiedTerritories = terries
+    val nextTerritoryName: String = unoccupiedTerritories.head
+    val nextTerritory: Territory = GameMap.territoryMap(nextTerritoryName)
+    val nextContinentName: String  = nextTerritory.continent
+    val nextContinent: Continent = GameMap.continentMap(nextContinentName)
+    receiver.territoryNames = nextTerritoryName :: receiver.territoryNames
+    nextTerritory.occupant = receiver
+    nextContinent.occupantNames += receiver.name
+    unoccupiedTerritories = unoccupiedTerritories.tail
+    unoccupiedTerritories
   }
 
   /**R6: Players have their armies assigned to territories*/
@@ -82,7 +100,7 @@ class Game() {
       var checkMath: Int = 0
       p.armiesOnReserve = p.armiesOnReserve - 1  //subtract off the armies we place to claim each territory
       val div: Int = p.armiesOnReserve / p.getNumTerritories()
-      var rem: Int = p.armiesOnReserve % p.getNumTerritories()
+      val rem: Int = p.armiesOnReserve % p.getNumTerritories()
       for (t: String <- p.territoryNames) {
         assert(GameMap.territoryMap(t).occupant.equals(p))
         GameMap.territoryMap(t).addArmies(div)
