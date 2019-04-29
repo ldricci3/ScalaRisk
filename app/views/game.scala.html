@@ -27,7 +27,7 @@
                 <img src="@routes.Assets.versioned("images/world-domination-game-board-2.1.1.jpg")" style="max-width: 100%; max-height: 100%; ">
                 @for(i <- GameMap.getTerritories) {
                     <div class="territory" style="position: absolute; top: @(i.position._1 + "%"); left: @(i.position._2 + "%"); max-height: 10%;">
-                        <p style="color: @("rgb(" + i.occupant.createRGB._1 + ", " + i.occupant.createRGB._2 + ", " + i.occupant.createRGB._3 + ")");">@i.numArmies</p>
+                        <p style="font-size: 1.25vw; color: @("rgb(" + i.occupant.createRGB._1 + ", " + i.occupant.createRGB._2 + ", " + i.occupant.createRGB._3 + ")" )">@i.numArmies</p>
                     </div>
                 }
             </div>
