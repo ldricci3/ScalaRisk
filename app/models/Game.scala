@@ -47,19 +47,31 @@ class Game() {
     GameMap.getResources
     GameMap.setupAdjacentTerritories()
     GameMap.setupContinentsAndTerritories()
+
     randomTerritoryAssignment()
     isStarted = true
 
     getCurrentPlayer().allocateTurnAllotment()
-
-    //for checking end game
-    //testEndGame()
   }
 
   def testEndGame(): Unit = {
+    val winner = players.head
+    val loser = players.last
+
+    var unoccupiedTerritories: scala.collection.immutable.List[String] =
+      scala.util.Random.shuffle(GameMap.territoryMap.keySet.toList)
+
+    unoccupiedTerritories = assignTerritory(unoccupiedTerritories, loser)
+    while (unoccupiedTerritories.nonEmpty) {
+      unoccupiedTerritories = assignTerritory(unoccupiedTerritories, winner)
+    }
+
+    for (p <- players) {
+      p.updateNeighbors()
+    }
 
   }
-  def assignTerritory(terries: scala.collection.Set[String], receiver: Player): scala.collection.Set[String] = {
+  def assignTerritory(terries: scala.collection.immutable.List[String], receiver: Player): scala.collection.immutable.List[String] = {
     var unoccupiedTerritories = terries
     val nextTerritoryName: String = unoccupiedTerritories.head
     val nextTerritory: Territory = GameMap.territoryMap(nextTerritoryName)
@@ -125,12 +137,13 @@ class Game() {
   }
 
   def gameInProgress: Boolean = {
+    var ret = true
     for (player <- players) {
       if (player.getNumTerritories() == GameMap.territoryMap.size) {
-        false
+        ret = false
       }
     }
-    true
+    ret
   }
 
   def end(): Unit = {
