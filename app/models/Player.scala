@@ -22,8 +22,6 @@ class Player(val id: Int,
   var continentNames: List[String] = List()
   val colorRBG: (Int, Int, Int) = createRGB
   var armiesOnReserve: Int = armies.size
-  var visited: mutable.Map[String, Boolean] = mutable.Map.empty[String, Boolean]
-  var connectedTerritories: mutable.Set[String] = mutable.Set.empty[String]
   var neighbors: mutable.Set[String] = mutable.Set.empty[String]
 
   /**
@@ -138,9 +136,15 @@ class Player(val id: Int,
     two.addArmies(num)
   }
 
+
+  /**
+    * DFS
+    */
+  var visited: mutable.Map[String, Boolean] = mutable.Map.empty[String, Boolean]
   /** Fills visited Map values with false */
   def resetVisited(): Unit = {
     visited = mutable.Map[String, Boolean]().withDefaultValue(false)
+    visited = collection.mutable.Map(GameMap.territoryMap.keySet.toList.map(e => e -> true).toMap.toSeq: _*)
   }
 
   /**
@@ -149,6 +153,8 @@ class Player(val id: Int,
     *  the given territory
     * @param currentTerritory the territory to expand from
     */
+
+  var connectedTerritories: mutable.Set[String] = mutable.Set.empty[String]
   def dfs(currentTerritory: String): Unit = {
     visited(currentTerritory) = true
     connectedTerritories += currentTerritory
