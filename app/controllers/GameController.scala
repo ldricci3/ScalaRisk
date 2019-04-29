@@ -4,11 +4,12 @@ import javax.inject.Inject
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+
 import scala.collection.mutable.ArrayBuffer
 import play.api.libs.json._
-import scala.collection.mutable.ListBuffer
 
-import models.GameState
+import scala.collection.mutable.ListBuffer
+import models.{BattleInfo, GameState}
 
 case class InputText (input: String)
 
@@ -60,14 +61,8 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       currentPlayer = models.GameMap.territoryMap(game.attacker.attackTo).occupant.name
     } else if (game.state == models.Roll){
       currentPlayer = models.GameMap.territoryMap(game.attacker.attackTo).occupant.name
-      for (die <- game.attackRolls) {
-        attackingDice += die.toString + ","
-      }
-      attackingDice.dropRight(1)
-      for (die <- game.defendRolls) {
-        defendingDice += die.toString + ","
-      }
-      defendingDice.dropRight(1)
+      attackingDice = BattleInfo.attackRolls.mkString(",")
+      defendingDice = BattleInfo.defendRolls.mkString(",")
     } else {
       currentPlayer = game.getCurrentPlayer().name
     }
