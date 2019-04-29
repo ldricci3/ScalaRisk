@@ -9,7 +9,7 @@ Kamchatka, Alaska, Yakutsk, Japan, Irkutsk
 Ural, Ukraine, Afghanistan, China, Siberia
 Siberia, Ural, Yakutsk, Irkutsk, Mongolia, China
 Irkutsk, Yakutsk, Kamchatka, Japan, Mongolia, Siberia
-Japan, Kamchatka, Irkutsk, Mongolia
+Japan, Kamchatka, Irkutsk, Mongolia, New Guinea
 Afghanistan, Ukraine, Ural, China, India, Middle East
 China, Afghanistan, Ural, Siberia, Mongolia, Siam, India
 Mongolia, China, Siberia, Irkutsk, Japan
@@ -17,7 +17,7 @@ Middle East, East Africa, Egypt, Southern Europe, Ukraine, Afghanistan
 India, Middle East, Afghanistan, China, Siam
 Siam, Indonesia, India, China
 Indonesia, Siam, New Guinea, Western Australia 
-New Guinea, Indonesia, Western Australia, Eastern Australia
+New Guinea, Indonesia, Western Australia, Eastern Australia, Japan
 Western Australia, Indonesia, New Guinea, Eastern Australia
 Eastern Australia, New Guinea, Western Australia
 Iceland, Greenland, Scandinavia, Great Britain
