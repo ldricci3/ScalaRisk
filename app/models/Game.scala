@@ -56,8 +56,8 @@ class Game() {
 
   /**R6: Players have their armies assigned to territories*/
   def randomTerritoryAssignment(): Unit = {
-    var unoccupiedTerritories: scala.collection.Set[String] =
-      GameMap.territoryMap.keySet
+    var unoccupiedTerritories: scala.collection.immutable.List[String] =
+      scala.util.Random.shuffle(GameMap.territoryMap.keySet.toList)
     var i: Int = 0
     while(unoccupiedTerritories.nonEmpty) {
       val currPlayer: Player = players(i % players.length)
@@ -68,7 +68,7 @@ class Game() {
       currPlayer.territoryNames = nextTerritoryName :: currPlayer.territoryNames
       nextTerritory.occupant = currPlayer
       nextContinent.occupantNames += currPlayer.name
-      unoccupiedTerritories = unoccupiedTerritories - nextTerritoryName
+      unoccupiedTerritories = unoccupiedTerritories.tail
       i = i + 1
     }
 
