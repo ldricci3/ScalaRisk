@@ -42,18 +42,18 @@
                     <h3>Current Action: @game.showCurrentAction()</h3>
                     @if(game.state == models.Defend) {
                         <div style="opacity: .5; background-color:@("rgb(" + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._1 + ", " + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._2 + ", " + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._3 + ")"); ">
-                            <p class="text-dark" style="opacity: 1;">Current Player: @(models.GameMap.territoryMap(game.attacker.attackTo).occupant.name)</p>
+                            <p style="opacity: 1; color:black">Current Player: @(models.GameMap.territoryMap(game.attacker.attackTo).occupant.name)</p>
                         </div>
                     } else if (game.state == models.Roll){
                         <div style="opacity: .5; background-color:@("rgb(" + models.GameMap.territoryMap(game.attacker.attackFrom).occupant.createRGB._1 + ", " + models.GameMap.territoryMap(game.attacker.attackFrom).occupant.createRGB._2 + ", " + models.GameMap.territoryMap(game.attacker.attackFrom).occupant.createRGB._3 + ")"); ">
-                            <p class="text-dark" style="opacity: 1;">Attacking Player: @(models.GameMap.territoryMap(game.attacker.attackFrom).occupant.name)</p>
+                            <p style="opacity: 1; color:black">Attacking Player: @(models.GameMap.territoryMap(game.attacker.attackFrom).occupant.name)</p>
                         </div>
                         <div style="opacity: .5; background-color:@("rgb(" + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._1 + ", " + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._2 + ", " + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._3 + ")"); ">
-                            <p class="text-dark" style="opacity: 1;">Defending Player: @(models.GameMap.territoryMap(game.attacker.attackTo).occupant.name)</p>
+                            <p style="opacity: 1; color:black">Defending Player: @(models.GameMap.territoryMap(game.attacker.attackTo).occupant.name)</p>
                         </div>
                     } else {
                         <div style="opacity: .5; background-color:@("rgb(" + game.getCurrentPlayer().createRGB._1 + ", " + game.getCurrentPlayer().createRGB._2 + ", " + game.getCurrentPlayer().createRGB._3 + ")"); ">
-                            <p class="text-dark" style="opacity: 1;">Current Player: @(game.getCurrentPlayer().name)</p>
+                            <p style="opacity: 1; color:black">Current Player: @(game.getCurrentPlayer().name)</p>
                         </div>
                     }
                     @if(game.state == models.Roll) {
@@ -127,7 +127,7 @@
                     <p>Player Color Key:</p>
                     @for(i <- game.getPlayers()) {
                         <div style="opacity: .5; background-color:@("rgb(" + i.createRGB._1 + ", " + i.createRGB._2 + ", " + i.createRGB._3 + ")"); ">
-                            <p class="text-dark" style="opacity: 1;">@(i.name)</p>
+                            <p style="opacity: 1; color:black">@(i.name)</p>
                         </div>
                         @*<p style="color:@("rgb(" + i.createRGB._1 + ", " + i.createRGB._2 + ", " + i.createRGB._3 + ")");">@i.name: @i.color<p>*@
                     }
