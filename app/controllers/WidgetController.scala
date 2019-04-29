@@ -23,6 +23,7 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
   private val widgets = scala.collection.mutable.ArrayBuffer(Widget(""))
   private var playerList = List[String]()
   private var playerCount = 0
+  private var gameIsStarted = false
 
   // The URL to the widget.  You can call this directly from the template, but it
   // can be more convenient to leave the template completely stateless i.e. all
@@ -45,13 +46,26 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
     }
   }
 
+  def join: Action[AnyContent] = Action {
+    if (!gameIsStarted) {
+      Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Game has not started yet")
+    } else {
+      Redirect(routes.GameController.show())
+    }
+  }
+
   // Corresponds to start game button to begin the game. Checks for min player amount and if satisfied creates a comma-
   // separated string of the player names to pass to the game controller.
   def start: Action[AnyContent] = Action {
-    if (playerCount < 3) {
-      Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Must have at least 3 players")
+    if (!gameIsStarted) {
+      if (playerCount < 3) {
+        Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Must have at least 3 players")
+      } else {
+        gameIsStarted = true
+        Redirect(routes.GameController.startGame(playerList.mkString(",")))
+      }
     } else {
-      Redirect(routes.GameController.startGame(playerList.mkString(",")))
+      Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Game is already in progress")
     }
   }
 
@@ -72,19 +86,21 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
     val successFunction = { data: Data =>
       // This is the good case, where the form was successfully parsed as a Data object.
       val widget = Widget(name = data.name)
-      // This checks for duplicate names(case-sensitive) & reserved characters, then adds the player if not a duplicate
-      // and count < 6
-      if (playerCount >= 6) {
-        Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Cannot have more than 6 players")
-      } else if (playerList.contains(widget.name)) {
-        Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Cannot have duplicate names")
-      } else if (widget.name.contains(",")) {
-        Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Invalid character in name: comma")
+      if (!gameIsStarted){
+        if (playerCount >= 6) {
+          Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Cannot have more than 6 players")
+        } else if (playerList.contains(widget.name)) {
+          Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Cannot have duplicate names")
+        } else if (widget.name.contains(",")) {
+          Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Invalid character in name: comma")
+        } else {
+          widgets.append(widget)
+          playerList = widget.name :: playerList
+          playerCount += 1
+          Redirect(routes.WidgetController.listWidgets()).flashing("Success" -> " Player added!")
+        }
       } else {
-        widgets.append(widget)
-        playerList = widget.name :: playerList
-        playerCount += 1
-        Redirect(routes.WidgetController.listWidgets()).flashing("Success" -> " Player added!")
+        Redirect(routes.WidgetController.listWidgets()).flashing("Success" -> " Game already started, cannot add players!")
       }
     }
 
