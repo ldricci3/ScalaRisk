@@ -2,6 +2,8 @@
 
 [Google Doc Link](https://docs.google.com/document/d/1yY7frHaYDF8IoTSd7z3gOMtoapwcGe-EOquH1Yg8KB8/edit?usp=sharing)
 
+[State Machine Diagram](https://github.gatech.edu/vtang7/CS2340Sp19Team15/blob/master/ScalaGameState.pdf)
+
 ## How to run locally
 
 Start Risk:
