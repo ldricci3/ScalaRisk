@@ -100,10 +100,12 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
           showMessage(submissionMessage)
         } else {
           submissionMessage = "You are not defending"
+          checker.message = "You are not defending"
           showMessage(submissionMessage)
         }
       } else if (game.getCurrentPlayer().ip != request.remoteAddress) {
         submissionMessage = "It is not your turn"
+        checker.message = "It is not your turn"
         showMessage(submissionMessage)
       } else {
         val inputText = InputText(data.input)
@@ -202,7 +204,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     c.newInstance()
     game.setupGame(playerNames, List("Red", "White", "Yellow", "Green", "Blue", "Orange"), playerIPS)
 
-    showMessage("");
+    showMessage("Allowed commands: [place]");
   }
   def saveMessage(m: String): Unit = {
     checker.messageOn = false
