@@ -38,5 +38,5 @@ Eastern United States, Western United States, Ontario, Quebec, Mexico
 Mexico, Western United States, Eastern United States, Venezuela
 Venezuela, Mexico, Brazil, Peru
 Brazil, Venezuela, Peru, Argentina, North Africa
-Peru, Venezuela, Argentina
+Peru, Venezuela, Argentina, Brazil
 Argentina, Peru, Brazil
