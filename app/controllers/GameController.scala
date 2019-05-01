@@ -46,27 +46,33 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   def json: Action[AnyContent] = Action {
     val jsonValue: JsValue = JsObject(Seq(
       "Current Player" -> JsString(jsonGameStats()(0)),
-      "Current Action" -> JsString(jsonGameStats()(1)),
+      "Player Color" -> JsString(jsonGameStats()(1)),
+      "Current Action" -> JsString(jsonGameStats()(2)),
       "Player Territories" -> JsArray(jsonPlayerTerritories()),
-      "Attacking Dice" -> JsString(jsonGameStats()(2)),
-      "Defending Dice" -> JsString(jsonGameStats()(3))))
+      "Attacking Dice" -> JsString(jsonGameStats()(3)),
+      "Defending Dice" -> JsString(jsonGameStats()(4)),
+      "Submission Message" -> JsString(submissionMessage)))
     Ok(jsonValue)
   }
 
   def jsonGameStats(): Array[String] = {
     var currentPlayer = ""
+    var currentColor = ""
     var attackingDice = ""
     var defendingDice = ""
     if (game.state == models.Defend) {
       currentPlayer = models.GameMap.territoryMap(game.attacker.attackTo).occupant.name
+      currentColor = models.GameMap.territoryMap(game.attacker.attackTo).occupant.color
     } else if (game.state == models.Roll){
       currentPlayer = models.GameMap.territoryMap(game.attacker.attackTo).occupant.name
+      currentColor = models.GameMap.territoryMap(game.attacker.attackTo).occupant.color
       attackingDice = BattleInfo.attackRolls.mkString(",")
       defendingDice = BattleInfo.defendRolls.mkString(",")
     } else {
       currentPlayer = game.getCurrentPlayer().name
+      currentColor = game.getCurrentPlayer().color
     }
-    Array(currentPlayer, game.showCurrentAction(), attackingDice, defendingDice)
+    Array(currentPlayer, currentColor, game.showCurrentAction(), attackingDice, defendingDice)
   }
 
   def jsonPlayerTerritories(): Array[JsValue] = {
@@ -86,10 +92,25 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
     val successFunction = { data: InputText =>
       // this is the SUCCESS case
-      val inputText = InputText(data.input)
-      inputTextHistory.append(inputText)
-      tryCommand(inputText.input)
-      showMessage(submissionMessage)
+      if (game.state == models.Defend) {
+        if (models.GameMap.getTerritoryByName(game.attacker.attackTo).occupant.ip == request.remoteAddress) {
+          val inputText = InputText(data.input)
+          inputTextHistory.append(inputText)
+          tryCommand(inputText.input)
+          showMessage(submissionMessage)
+        } else {
+          submissionMessage = "You are not defending"
+          showMessage(submissionMessage)
+        }
+      } else if (game.getCurrentPlayer().ip != request.remoteAddress) {
+        submissionMessage = "It is not your turn"
+        showMessage(submissionMessage)
+      } else {
+        val inputText = InputText(data.input)
+        inputTextHistory.append(inputText)
+        tryCommand(inputText.input)
+        showMessage(submissionMessage)
+      }
     }
 
     val formValidationResult: Form[InputText] = form.bindFromRequest
@@ -171,14 +192,15 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   }
 
   // Gets comma-separated string of names and breaks them into a list, then instantiates the game
-  def startGame(playerNames: String): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
-    val playerArray = playerNames.split(",")
-    val playerList = playerArray.toList
+  def startGame(playerInfo: String): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+    val infoArray = playerInfo.split("-")
+    val playerNames = infoArray(0).split(",").toList
+    val playerIPS = infoArray(1).split(",").toList
 
     val c = models.GameMap.getClass.getDeclaredConstructor()
     c.setAccessible(true)
     c.newInstance()
-    game.setupGame(playerList, List("Red", "White", "Yellow", "Green", "Blue", "Orange"))
+    game.setupGame(playerNames, List("Red", "White", "Yellow", "Green", "Blue", "Orange"), playerIPS)
 
     showMessage("");
   }
