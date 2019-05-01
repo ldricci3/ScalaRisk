@@ -22,6 +22,7 @@ class Game() {
     if (state == Place) {
       nextTurn()
     }
+    removeLosingPlayers()
   }
 
   /** Loads map, continent, territory data. */
@@ -48,7 +49,12 @@ class Game() {
     GameMap.setupAdjacentTerritories()
     GameMap.setupContinentsAndTerritories()
 
-    randomTerritoryAssignment()
+    if (names.contains("ENDGAMETEST")) {
+      testEndGame()
+    } else {
+      randomTerritoryAssignment()
+    }
+
     isStarted = true
 
     getCurrentPlayer().allocateTurnAllotment()
@@ -68,6 +74,7 @@ class Game() {
 
     for (p <- players) {
       p.updateNeighbors()
+      p.armiesOnReserve = 0
     }
 
   }
@@ -162,6 +169,10 @@ class Game() {
   def getCurrentAction(): Int = getCurrentPlayer().currentAction
 
   def allocateArmies(): Unit = getCurrentPlayer().allocateTurnAllotment()
+
+  def removeLosingPlayers(): Unit = {
+    players = players.filter(_.getNumTerritories() > 0)
+  }
 
   def showCurrentAction(): String = state match {
     case Place => "place armies"
