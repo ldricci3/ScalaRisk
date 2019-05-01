@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:clickable="true"
+android:focusable="true"
+android:focusableInTouchMode="true">
+
+    <android.support.constraint.ConstraintLayout
+            android:id="@+id/toolbar"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/darkGrey">
+
+        <android.support.constraint.Guideline
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline3"
+                app:layout_constraintGuide_percent="0.45"/>
+        <android.support.constraint.Guideline
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline4"
+                app:layout_constraintGuide_percent="0.6"/>
+        <android.support.constraint.Guideline
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline5"
+                app:layout_constraintGuide_percent="0.8"/>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline3" android:layout_width="0dp"
+                android:id="@+id/linearLayout">
+            <TextView
+                    android:text="Current Player: "
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/currentPlayer" android:layout_weight="1"
+                    android:textColor="@android:color/white" android:layout_margin="2dp" android:paddingLeft="12dp"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/actionToTake" android:layout_weight="1"
+                    android:textColor="@android:color/white" android:text="Action to Take:"
+                    android:layout_margin="2dp" android:paddingLeft="12dp"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/message" android:layout_weight="1"
+                    android:textColor="@android:color/white" android:text="Message:"
+                    android:layout_margin="2dp" android:paddingLeft="12dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/guideline3"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp">
+
+
+            <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/spinner1"
+                    android:entries="@array/actions"
+                    android:prompt="@string/action_prompt"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/guideline4"
+                app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp">
+
+
+            <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/spinner2"
+                    android:entries="@array/countries"
+                    android:prompt="@string/country_prompt"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/guideline5"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="0dp">
+
+
+            <EditText
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/num" android:layout_weight="1" android:layout_marginBottom="10dp"/>
+            <Button
+                    android:text="Submit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/submitAction" android:layout_weight="1"/>
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</android.support.constraint.ConstraintLayout>

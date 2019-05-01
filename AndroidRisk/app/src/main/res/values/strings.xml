@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">Risk</string>
+    <string name="lobby_instructions">Please create 3 to 6 players by entering their name.</string>
+    <string name="action_prompt">Pick an action.</string>
+    <string name="country_prompt">Pick a country.</string>
+    <string name="currPlayer">Current Player: %1$s (%2$s)</string>
+    <string name="action">Action To Take: %1$s</string>
+    <string name="message">Message: %1$s</string>
+    <string-array name="actions">
+        <item>Place Army</item>
+        <item>Attack</item>
+        <item>Fortify</item>
+        <item>Defend</item>
+        <item>Next</item>
+    </string-array>
+    <string-array name="countries">
+        <item>Africa</item>
+        <item>North Africa</item>
+        <item>Egypt</item>
+        <item>Congo</item>
+        <item>East Africa</item>
+        <item>South Africa</item>
+        <item>Madagascar</item>
+        <item>Asia</item>
+        <item>Yakutsk</item>
+        <item>Kamchatka</item>
+        <item>Ural</item>
+        <item>Siberia</item>
+        <item>Irkutsk</item>
+        <item>Japan</item>
+        <item>Afghanistan</item>
+        <item>China</item>
+        <item>Mongolia</item>
+        <item>Middle East</item>
+        <item>India</item>
+        <item>Siam</item>
+        <item>Australia</item>
+        <item>Indonesia</item>
+        <item>New Guinea</item>
+        <item>Western Australia</item>
+        <item>Eastern Australia</item>
+        <item>Europe</item>
+        <item>Iceland</item>
+        <item>Scandanavia</item>
+        <item>Great Britain</item>
+        <item>Northern Europe</item>
+        <item>Ukraine</item>
+        <item>Western Europe</item>
+        <item>Eastern Europe</item>
+        <item>North America</item>
+        <item>Alaska</item>
+        <item>Northwest Territory</item>
+        <item>Greenland</item>
+        <item>Alberta</item>
+        <item>Ontario</item>
+        <item>Quebec</item>
+        <item>Western United States</item>
+        <item>Eastern United States</item>
+        <item>Mexico</item>
+        <item>South America</item>
+        <item>Venezuela</item>
+        <item>Brazil</item>
+        <item>Peru</item>
+        <item>Argentina</item>
+
+    </string-array>
+</resources>
