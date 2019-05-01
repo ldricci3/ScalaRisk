@@ -92,6 +92,25 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
 
     val successFunction = { data: InputText =>
       // this is the SUCCESS case
+      if (game.state == models.Defend) {
+        if (models.GameMap.getTerritoryByName(BattleInfo.attackTo).occupant.ip == request.remoteAddress) {
+          val inputText = InputText(data.input)
+          inputTextHistory.append(inputText)
+          tryCommand(inputText.input)
+          showMessage(submissionMessage)
+        } else {
+          submissionMessage = "You are not defending"
+          showMessage(submissionMessage)
+        }
+      } else if (game.getCurrentPlayer().ip != request.remoteAddress) {
+        submissionMessage = "It is not your turn"
+        showMessage(submissionMessage)
+      } else {
+        val inputText = InputText(data.input)
+        inputTextHistory.append(inputText)
+        tryCommand(inputText.input)
+        showMessage(submissionMessage)
+      }
       val inputText = InputText(data.input)
       inputTextHistory.append(inputText)
       tryCommand(inputText.input)
@@ -177,14 +196,15 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   }
 
   // Gets comma-separated string of names and breaks them into a list, then instantiates the game
-  def startGame(playerNames: String): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
-    val playerArray = playerNames.split(",")
-    val playerList = playerArray.toList
+  def startGame(playerInfo: String): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+    val infoArray = playerInfo.split("-")
+    val playerNames = infoArray(0).split(",").toList
+    val playerIPS = infoArray(1).split(",").toList
 
     val c = models.GameMap.getClass.getDeclaredConstructor()
     c.setAccessible(true)
     c.newInstance()
-    game.setupGame(playerList, List("Red", "White", "Yellow", "Green", "Blue", "Orange"))
+    game.setupGame(playerNames, List("Red", "White", "Yellow", "Green", "Blue", "Orange"), playerIPS)
 
     showMessage("");
   }

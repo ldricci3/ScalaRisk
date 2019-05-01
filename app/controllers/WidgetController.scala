@@ -22,6 +22,7 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
 
   private val widgets = scala.collection.mutable.ArrayBuffer(Widget(""))
   private var playerList = List[String]()
+  private var ipList = List[String]()
   private var playerCount = 0
   private var gameIsStarted = false
 
@@ -62,7 +63,7 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
         Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Must have at least 3 players")
       } else {
         gameIsStarted = true
-        Redirect(routes.GameController.startGame(playerList.mkString(",")))
+        Redirect(routes.GameController.startGame(playerList.mkString(",") + "-" + ipList.mkString(",")))
       }
     } else {
       Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Game is already in progress")
@@ -94,6 +95,7 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
         } else if (widget.name.contains(",")) {
           Redirect(routes.WidgetController.listWidgets()).flashing("Error" -> " Invalid character in name: comma")
         } else {
+          ipList = request.remoteAddress :: ipList
           widgets.append(widget)
           playerList = widget.name :: playerList
           playerCount += 1

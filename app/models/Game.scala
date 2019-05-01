@@ -25,7 +25,7 @@ class Game() {
   }
 
   /** Loads map, continent, territory data. */
-  def setupGame(names:  List[String], colors: List[String]): Unit = {
+  def setupGame(names:  List[String], colors: List[String], ipList: List[String]): Unit = {
     val requirements: Boolean =
       names.size >= 3 && names.size <= 6 //&&
     //names.size == colors.size
@@ -41,7 +41,7 @@ class Game() {
     /** R2: Random turn order */
     val namesAndColors: List[(String, String)] = names.zipAll(colors.take(names.length), "", "")
     players = scala.util.Random.shuffle(for (((name, color), id) <- namesAndColors.zipWithIndex) yield {
-      new Player(id, color, name, baseArmy)
+      new Player(id, color, name, baseArmy, ipList(id))
     })
     GameMapType.mapType = "basic"
     GameMap.getResources

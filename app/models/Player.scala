@@ -4,7 +4,8 @@ import scala.collection.mutable
 class Player(val id: Int,
              val color: String,
              val name: String,
-             val armies: Set[Army]) {
+             val armies: Set[Army],
+             val ip: String) {
   /**
   val requirements: Boolean = (color == "Red"
     || color == "Black"
@@ -14,7 +15,7 @@ class Player(val id: Int,
   require(requirements, "Red, Black, Yellow, Green, Blue")
     */
 
-  def this(id: Int, name: String, armies: Set[Army]) = this(id, "Colorless", name, armies)
+  def this(id: Int, name: String, armies: Set[Army]) = this(id, "Colorless", name, armies, "0")
 
   var currentAction: Int = 1
   var previousAction: Int = 1

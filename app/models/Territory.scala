@@ -4,7 +4,7 @@ class Territory(val name: String,
                 val continent: String,
                 var numArmies: Int,
                 val position: (Int, Int)) {
-  var occupant: Player = new Player(2340, "Red", "Scala", Set.empty[Army])
+  var occupant: Player = new Player(2340, "Red", "Scala", Set.empty[Army], "00")
 
   /**
     * Constructor used during GameMap setup
