@@ -202,7 +202,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     c.newInstance()
     game.setupGame(playerNames, List("Red", "White", "Yellow", "Green", "Blue", "Orange"), playerIPS)
 
-    showMessage("");
+    showMessage("Allowed commands: [place]");
   }
   def saveMessage(m: String): Unit = {
     checker.messageOn = false
