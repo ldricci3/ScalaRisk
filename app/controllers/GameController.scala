@@ -50,7 +50,8 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
       "Current Action" -> JsString(jsonGameStats()(2)),
       "Player Territories" -> JsArray(jsonPlayerTerritories()),
       "Attacking Dice" -> JsString(jsonGameStats()(3)),
-      "Defending Dice" -> JsString(jsonGameStats()(4))))
+      "Defending Dice" -> JsString(jsonGameStats()(4)),
+      "Submission Message" -> JsString(submissionMessage)))
     Ok(jsonValue)
   }
 
