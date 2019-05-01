@@ -93,7 +93,7 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
     val successFunction = { data: InputText =>
       // this is the SUCCESS case
       if (game.state == models.Defend) {
-        if (models.GameMap.getTerritoryByName(BattleInfo.attackTo).occupant.ip == request.remoteAddress) {
+        if (models.GameMap.getTerritoryByName(game.attacker.attackTo).occupant.ip == request.remoteAddress) {
           val inputText = InputText(data.input)
           inputTextHistory.append(inputText)
           tryCommand(inputText.input)
@@ -111,10 +111,6 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
         tryCommand(inputText.input)
         showMessage(submissionMessage)
       }
-      val inputText = InputText(data.input)
-      inputTextHistory.append(inputText)
-      tryCommand(inputText.input)
-      showMessage(submissionMessage)
     }
 
     val formValidationResult: Form[InputText] = form.bindFromRequest
