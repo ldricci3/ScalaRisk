@@ -40,6 +40,9 @@
                 <div class="col-sm text-center bg-secondary text-light" id="status">
                     <h1>Game Status</h1>
                     <h3>Current Action: @game.showCurrentAction()</h3>
+                    @if(game.state == models.End) {
+                        <p>Return to the homepage and press reset to start a new game</p>
+                    }
                     @if(game.state == models.Defend) {
                         <div style="opacity: .5; background-color:@("rgb(" + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._1 + ", " + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._2 + ", " + models.GameMap.territoryMap(game.attacker.attackTo).occupant.createRGB._3 + ")"); ">
                             <p style="opacity: 1; color:black">Current Player: @(models.GameMap.territoryMap(game.attacker.attackTo).occupant.name)</p>

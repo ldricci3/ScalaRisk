@@ -43,6 +43,7 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
       widgets.clear()
       playerList = List[String]()
       playerCount = 0
+      gameIsStarted = false
       Redirect(routes.WidgetController.listWidgets()).flashing("Success" -> " Player list reset!")
     }
   }
