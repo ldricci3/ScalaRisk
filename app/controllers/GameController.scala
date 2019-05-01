@@ -100,10 +100,12 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
           showMessage(submissionMessage)
         } else {
           submissionMessage = "You are not defending"
+          checker.message = "You are not defending"
           showMessage(submissionMessage)
         }
       } else if (game.getCurrentPlayer().ip != request.remoteAddress) {
         submissionMessage = "It is not your turn"
+        checker.message = "It is not your turn"
         showMessage(submissionMessage)
       } else {
         val inputText = InputText(data.input)
