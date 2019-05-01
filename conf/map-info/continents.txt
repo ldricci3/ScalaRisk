@@ -2,5 +2,5 @@ Africa, 3, North@Africa 62 45, Egypt 57 51, Congo 73 51, East@Africa 66 53.5, So
 Asia, 7, Yakutsk 14 72, Kamchatka 16 78, Ural 25 62, Siberia 17 66, Irkutsk 26 71, Japan 36.5 79, Afghanistan 38 61, China 45 70, Mongolia 35 72, Middle@East 55 57, India 54 65, Siam 56 71
 Australia, 2, Indonesia 70 72, New@Guinea 68 79, Western@Australia 85 75, Eastern@Australia 85 82
 Europe, 5, Iceland 21.5 42.5, Scandinavia 21.5 48, Great@Britain 32 41, Northern@Europe 35 48, Ukraine 29 55, Western@Europe 47 42, Southern@Europe 43 48
-North America, 5, Alaska 18 15, Northwest@Territory 18 22, Greenland 10 37, Alberta 26 22, Ontario 26 26, Quebec 26 32, Western@United@States 35 22, Eastern@United@States 37.5 27, Mexico 50 23
+North America, 5, Alaska 18 15, Northwest@Territory 16 22, Greenland 10 37, Alberta 26 22, Ontario 26 26, Quebec 26 32, Western@United@States 35 22, Eastern@United@States 37.5 27, Mexico 50 23
 South America, 2, Venezuela 56 27, Brazil 67.5 34, Peru 67.5 28.5, Argentina 80 28.5
