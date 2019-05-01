@@ -46,27 +46,32 @@ class GameController @Inject()(cc: MessagesControllerComponents) extends Message
   def json: Action[AnyContent] = Action {
     val jsonValue: JsValue = JsObject(Seq(
       "Current Player" -> JsString(jsonGameStats()(0)),
-      "Current Action" -> JsString(jsonGameStats()(1)),
+      "Player Color" -> JsString(jsonGameStats()(1)),
+      "Current Action" -> JsString(jsonGameStats()(2)),
       "Player Territories" -> JsArray(jsonPlayerTerritories()),
-      "Attacking Dice" -> JsString(jsonGameStats()(2)),
-      "Defending Dice" -> JsString(jsonGameStats()(3))))
+      "Attacking Dice" -> JsString(jsonGameStats()(3)),
+      "Defending Dice" -> JsString(jsonGameStats()(4))))
     Ok(jsonValue)
   }
 
   def jsonGameStats(): Array[String] = {
     var currentPlayer = ""
+    var currentColor = ""
     var attackingDice = ""
     var defendingDice = ""
     if (game.state == models.Defend) {
       currentPlayer = models.GameMap.territoryMap(game.attacker.attackTo).occupant.name
+      currentColor = models.GameMap.territoryMap(game.attacker.attackTo).occupant.color
     } else if (game.state == models.Roll){
       currentPlayer = models.GameMap.territoryMap(game.attacker.attackTo).occupant.name
+      currentColor = models.GameMap.territoryMap(game.attacker.attackTo).occupant.color
       attackingDice = BattleInfo.attackRolls.mkString(",")
       defendingDice = BattleInfo.defendRolls.mkString(",")
     } else {
       currentPlayer = game.getCurrentPlayer().name
+      currentColor = game.getCurrentPlayer().color
     }
-    Array(currentPlayer, game.showCurrentAction(), attackingDice, defendingDice)
+    Array(currentPlayer, currentColor, game.showCurrentAction(), attackingDice, defendingDice)
   }
 
   def jsonPlayerTerritories(): Array[JsValue] = {
