@@ -12,6 +12,7 @@ case class CommandChecker() {
     case models.End => Set()
   }
 
+
   def isAllowedCommand(cmd: String, game: models.Game): (Boolean, Set[String]) = (allowedCommands(game).contains(cmd), allowedCommands(game))
 
   def checkCommand(cmd: String, game: models.Game): String = {
